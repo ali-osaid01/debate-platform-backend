@@ -1,5 +1,5 @@
 import { RateLimitRequestHandler, rateLimit } from "express-rate-limit";
-import { STATUS_CODES } from "../utils/constants";
+import { STATUS_CODES } from "../interface/enum";
 
 export const rateLimiter: RateLimitRequestHandler = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
