@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { asyncHandler, generateResponse, parseBody } from "../utils/helpers";
-import { STATUS_CODES } from "../utils/constants";
 import { UserService } from "../services";
 import { IPaginationParams } from "../utils/interfaces";
+import { STATUS_CODES } from "../interface/enum";
 
 class UserController {
     public register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

@@ -1,8 +1,8 @@
 import { Schema, Document } from "mongoose";
-import { ROLES } from "../../utils/constants";
 import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { IUser } from "../../interface/user.interface";
+import { EUserRole } from "../../interface/enum";
 
 declare global {
     namespace Express {
@@ -23,7 +23,7 @@ export const UserSchema = new Schema<UserDocument>({
     name: { type: String },
     email: { type: String, lowercase: true },
     password: { type: String, require: true, select: false },
-    role: { type: String, enum: Object.values(ROLES), default: "user" },
+    role: { type: String, enum: Object.values(EUserRole), default: "user" },
     fcmToken: { type: String, require: true, select: false },
     otp:{ type:Number }
 }, { timestamps: true, versionKey: false });

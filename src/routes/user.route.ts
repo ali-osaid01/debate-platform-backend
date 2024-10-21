@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ROLES } from "../utils/constants";
 import authMiddleware from "../middlewares/auth.middleware";
 import userController from "../controllers/user.controller";
+import { EUserRole } from "../interface/enum";
 
 export default class UserAPI {
     constructor(private readonly router: Router) {
@@ -10,8 +10,8 @@ export default class UserAPI {
     }
 
     setupRoutes() {
-        this.router.get('/', authMiddleware(Object.values(ROLES)), userController.fetchAllUsers);
-        this.router.get('/profile', authMiddleware(Object.values(ROLES)), userController.fetchUser);
+        this.router.get('/', authMiddleware(Object.values(EUserRole)), userController.fetchAllUsers);
+        this.router.get('/profile', authMiddleware(Object.values(EUserRole)), userController.fetchUser);
     }
 
     getRouter() {

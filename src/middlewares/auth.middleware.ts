@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import { STATUS_CODES } from '../utils/constants';
 import { UserService } from '../services';
+import { STATUS_CODES } from '../interface/enum';
 
 export default function authMiddleware(roles: string[]) {
     return (req: Request, res: Response, next: NextFunction) => {

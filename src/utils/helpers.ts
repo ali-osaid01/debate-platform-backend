@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { UserService } from '../services';
-import { ROLES } from './constants';
 import { hash } from 'bcrypt';
+import { EUserRole } from '../interface/enum';
 
 export const generateResponse = (data: any, message: string, res: Response, code = 200) => {
     return res.status(code).json({
@@ -28,7 +28,7 @@ export const asyncHandler = (requestHandler: RequestHandler) => {
 // create default admin
 export const createDefaultAdmin = async () => {
     try {
-        const userExist = await UserService.getOne({ email: process.env.ADMIN_DEFAULT_EMAIL, role: ROLES.ADMIN });
+        const userExist = await UserService.getOne({ email: process.env.ADMIN_DEFAULT_EMAIL, role: EUserRole.ADMIN });
         if (userExist) {
             console.log('admin exists ->', userExist.email);
             return
@@ -42,7 +42,7 @@ export const createDefaultAdmin = async () => {
             name: 'Admin',
             email: process.env.ADMIN_DEFAULT_EMAIL,
             password,
-            role: ROLES.ADMIN
+            role: EUserRole.ADMIN
         });
 
         console.log('Admin default created successfully');
