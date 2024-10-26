@@ -3,6 +3,7 @@ import { asyncHandler, generateResponse, parseBody } from "../utils/helpers";
 import { UserService } from "../services";
 import { IPaginationParams } from "../utils/interfaces";
 import { STATUS_CODES } from "../interface/enum";
+import { SUCCESS_DATA_SHOW_PASSED, SUCCESS_REGISTRATION_PASSED } from "../utils/constants";
 
 class UserController {
     public register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +21,7 @@ class UserController {
         const accessToken = await user.generateAccessToken();
         req.session = { accessToken };
 
-        generateResponse({ user, accessToken }, "Register successful", res);
+        generateResponse(user,SUCCESS_REGISTRATION_PASSED,res)
     });
 
     public login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -46,7 +47,7 @@ class UserController {
         req.session = { accessToken };
 
         user = await UserService.updateOne({ _id: user._id }, { fcmToken: body.fcmToken, name: 'User Testing11' }).select('+fcmtoken');
-        generateResponse({ user, accessToken }, 'Login successful', res);
+        generateResponse(user,SUCCESS_REGISTRATION_PASSED,res)
     });
 
     // Fetch all users with pagination
@@ -60,13 +61,21 @@ class UserController {
         };
 
         const usersData = await UserService.getAll({ query, page, limit });
-        generateResponse(usersData, 'List fetched successfully', res);
+        generateResponse(usersData,SUCCESS_DATA_SHOW_PASSED,res)
     });
 
     // Fetch a single user
     public fetchUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const user = await UserService.getOne({ _id: req.user.id });
-        generateResponse(user, 'User fetched successfully', res);
+        
+        if (!user) {
+            return next({
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                message: 'Invalid email or password',
+            });
+        }
+
+        generateResponse(user,SUCCESS_DATA_SHOW_PASSED,res)
     });
 }
 

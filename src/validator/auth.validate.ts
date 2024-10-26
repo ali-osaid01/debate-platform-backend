@@ -107,6 +107,7 @@ const verifyOtp = yup.object().shape({
     .noUnknown(),
   query: yup.object().noUnknown(),
 });
+
 const googleAuth = yup.object().shape({
   params: yup.object().noUnknown(),
   body: yup

@@ -7,7 +7,6 @@ import requestIp from "request-ip";
 import { connectDB } from "./config/db.config";
 import { log, rateLimiter, notFound, errorHandler } from "./middlewares";
 import API from "./routes"
-import { generateResponse } from "./utils/helpers";
 import { Server } from "socket.io";
 import { initializeSocketIO } from "./services/socket";
 
@@ -51,7 +50,7 @@ app.use(cookieSession({
 app.use(cors({ origin: "*", credentials: true }));
 app.use(rateLimiter);
 
-app.get('/', (req, res) => generateResponse(null, `Welcome to ${process.env.APP_NAME}!`, res));
+app.get('/', (req, res) => res.json(`Welcome to ${process.env.APP_NAME}!`));
 
 app.use(log);
 new API(app).registerGroups();

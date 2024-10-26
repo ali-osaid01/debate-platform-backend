@@ -1,15 +1,8 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { UserService } from '../services';
 import { hash } from 'bcrypt';
-import { EUserRole } from '../interface/enum';
+import { EUserRole, STATUS_CODES } from '../interface/enum';
 
-export const generateResponse = (data: any, message: string, res: Response, code = 200) => {
-    return res.status(code).json({
-        statusCode: code,
-        message,
-        data,
-    });
-}
 
 export const parseBody = (body: any) => {
     if (typeof body === 'string') {
@@ -17,6 +10,15 @@ export const parseBody = (body: any) => {
     }
 
     return body;
+}
+
+export const generateResponse = (data: any, message: string, res: Response, code = 200) => {
+    return res.status(code).json({
+        code,
+        data,
+        message,
+        status:code === STATUS_CODES.SUCCESS || code === STATUS_CODES.CREATED ? true : false
+    });
 }
 
 export const asyncHandler = (requestHandler: RequestHandler) => {
