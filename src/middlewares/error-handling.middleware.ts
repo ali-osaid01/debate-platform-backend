@@ -8,18 +8,18 @@ export function notFound(req: Request, res: Response, next: NextFunction) {
 }
 
 class ApiError extends Error {
-    public statusCode: number;
+    public code: number;
     public message: string;
     public errors: any[];
 
     constructor(
-        statusCode: number,
+        code: number,
         message = "Something went wrong",
         errors = [],
         stack = ""
     ) {
         super(message);
-        this.statusCode = statusCode;
+        this.code = code;
         this.message = message;
         this.errors = errors;
 
@@ -37,9 +37,10 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
 
     return res.status(statusCode).json({
         message: error?.message,
+        code: error?.code,
+        status:false,
         errors: error?.errors || [],
-        statusCode: error?.statusCode,
-        stack: error?.stack,
+        stack: error?.stack
     });
 }
 

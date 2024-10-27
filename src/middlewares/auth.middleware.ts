@@ -5,8 +5,8 @@ import { STATUS_CODES } from '../interface/enum';
 
 export default function authMiddleware(roles: string[]) {
     return (req: Request, res: Response, next: NextFunction) => {
+        
         const accessToken = req.headers.authorization?.split(' ')[1] ?? req.session?.accessToken;
-        // console.log("ACCESS TOKEN ->",accessToken);
         
         if (!accessToken) return next({
             statusCode: STATUS_CODES.UNAUTHORIZED,

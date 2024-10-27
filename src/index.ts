@@ -13,17 +13,13 @@ import { initializeSocketIO } from "./services/socket";
 
 dotenv.config();
 
-
 const app: Application = express();
 
 connectDB();
 
-
 const PORT: Number = +(process.env.PORT as string) || 5000;
 
-
 const httpServer = createServer(app);
-
 
 const io = new Server(httpServer, {
     pingTimeout: 60000, 
@@ -32,8 +28,6 @@ const io = new Server(httpServer, {
         credentials: true,
     },
 });
-// virtualdebate2000
-// 6b9Axj0enCn6yVEp
 
 app.set("io", io);
 
@@ -47,6 +41,7 @@ app.use(cookieSession({
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 }));
+
 app.use(cors({ origin: "*", credentials: true }));
 app.use(rateLimiter);
 

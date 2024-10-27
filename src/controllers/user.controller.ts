@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { asyncHandler, generateResponse, parseBody } from "../utils/helpers";
+import { asyncHandler, generateOTP, generateResponse, parseBody } from "../utils/helpers";
 import { UserService } from "../services";
 import { IPaginationParams } from "../utils/interfaces";
 import { STATUS_CODES } from "../interface/enum";
-import { SUCCESS_DATA_SHOW_PASSED, SUCCESS_REGISTRATION_PASSED } from "../utils/constants";
+import { SUCCESS_DATA_SHOW_PASSED, SUCCESS_LOGIN_PASSED, SUCCESS_REGISTRATION_PASSED } from "../utils/constants";
 
 class UserController {
     public register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -46,8 +46,61 @@ class UserController {
         const accessToken = await user.generateAccessToken();
         req.session = { accessToken };
 
-        user = await UserService.updateOne({ _id: user._id }, { fcmToken: body.fcmToken, name: 'User Testing11' }).select('+fcmtoken');
-        generateResponse(user,SUCCESS_REGISTRATION_PASSED,res)
+        user = await UserService.updateOne({ _id: user._id }, { fcmToken: body.fcmToken,}).select('+fcmtoken');
+        generateResponse({user,accessToken},SUCCESS_LOGIN_PASSED,res)
+    });
+    public sendOtp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const {email} = req.body;
+
+        const user = await UserService.getOne({email}).lean();
+        
+        if(!user) return next({
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                message: "User Not Found",
+        })
+
+        const otp = generateOTP();
+        await UserService.updateById(user._id,{otp})
+        generateResponse(otp,"OTP SEND TO EMAIL",res);
+    });
+
+    public verifyOtp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const { email, otp } = req.body;
+
+        const user:any = await UserService.getOne({ email });
+
+        // Check if user exists
+        if (!user) return next({
+            statusCode: STATUS_CODES.BAD_REQUEST,
+            message: "User Not Found",
+        });
+
+        // Check if OTP matches
+        if (user.otp !== otp) return next({
+            statusCode: STATUS_CODES.UNAUTHORIZED,
+            message: "Invalid OTP",
+        });
+
+        // Update user verification status or clear OTP if necessary
+        await UserService.updateById(user._id, { otp: null, isVerified: true });
+        const token = user.generateAccessToken();
+
+        generateResponse({token}, "OTP verified successfully", res);
+    });
+
+    public resetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const { password } = req.body;
+        const user = req.user;
+        console.log("USER ->",user)
+        if (!user) {
+            return next({
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                message: "User not found",
+            });
+        }
+
+        await UserService.updateById(user.id, { password });
+        generateResponse(null, "Password reset successfully", res);
     });
 
     // Fetch all users with pagination

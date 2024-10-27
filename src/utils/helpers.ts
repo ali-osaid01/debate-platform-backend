@@ -27,6 +27,9 @@ export const asyncHandler = (requestHandler: RequestHandler) => {
     };
 };
 
+export const generateOTP = () =>{
+    return Math.floor(100000 + Math.random() * 900000);
+}
 // create default admin
 export const createDefaultAdmin = async () => {
     try {

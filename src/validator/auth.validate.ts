@@ -5,14 +5,14 @@ const registerRule = yup.object().shape({
   body: yup
     .object()
     .shape({
+      name:yup.string().notRequired(),
       email: yup
         .string()
         .email()
         .required(),
-      password: yup.string().required().min(6),
-      fcmToken: yup.string().nullable(),
-    })
-    .noUnknown(),
+        password: yup.string().required().min(6),
+        fcmToken: yup.string().nullable(),
+    }).noUnknown(),
   query: yup.object().noUnknown(),
 });
 
@@ -35,10 +35,6 @@ const resetPassword = yup.object().shape({
     .object()
     .shape({
       password: yup.string().min(6).required(),
-      confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password")], "Passwords must match")
-        .required(),
     })
     .noUnknown(),
   query: yup.object().noUnknown(),
@@ -90,7 +86,8 @@ const verifyOtp = yup.object().shape({
   body: yup
     .object()
     .shape({
-      code: yup
+      email:yup.string().email(),
+      otp: yup
         .number()
         .required()
         .test(

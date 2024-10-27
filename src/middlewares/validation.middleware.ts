@@ -14,6 +14,7 @@ export class Validation {
 
     return async (req: Request, res: Response, next: NextFunction) => {
       const route = req.route.path.split("/:")[0];
+      console.log("ROUTE ->",route)
       const method = req.method.toLowerCase();
       if (_.includes(_supportedMethods, method) && _.has(Schemas, route)) {
         const _schema = _.get(Schemas, route);

@@ -28,7 +28,7 @@ export const UserSchema = new Schema<UserDocument>({
     otp:{ type:Number }
 }, { timestamps: true, versionKey: false });
 
-// UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ email: 1 }, { unique: true });
 
 UserSchema.pre<UserDocument>("save", async function (next: any) {
     if (!this.isModified("password")) return next();

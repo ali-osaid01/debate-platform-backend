@@ -55,6 +55,10 @@ export default class BaseModel<T extends Document> {
         return this.model.findOne(filter, projection, options);
     }
 
+    getById(id: string): Promise<T | null> {
+        return this.model.findById(id);
+    }
+
     async getAll({ query, page, limit, populate }: GetPaginationQueryParams): Promise<PaginatedData<T>> {
         const { data, pagination } = await getPaginatedData({
             model: this.model as PaginateModel<T>,
@@ -80,6 +84,10 @@ export default class BaseModel<T extends Document> {
 
     updateOne(filter: RootFilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): QueryWithHelpers<T | null, T> {
         return this.model.findOneAndUpdate(filter, update, options || { new: true });
+    }
+
+    updateById(id: string, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T | null> {
+        return this.model.findByIdAndUpdate(id, update, { new: true, ...options }).exec();
     }
 
     deleteOne(filter: RootFilterQuery<T>): QueryWithHelpers<T | null, T> {
