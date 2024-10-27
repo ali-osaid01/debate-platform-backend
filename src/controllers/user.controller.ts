@@ -4,6 +4,7 @@ import { UserService } from "../services";
 import { IPaginationParams } from "../utils/interfaces";
 import { STATUS_CODES } from "../interface/enum";
 import { SUCCESS_DATA_SHOW_PASSED, SUCCESS_LOGIN_PASSED, SUCCESS_REGISTRATION_PASSED } from "../utils/constants";
+import { hash } from "bcrypt";
 
 class UserController {
     public register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -98,8 +99,8 @@ class UserController {
                 message: "User not found",
             });
         }
-
-        await UserService.updateById(user.id, { password });
+        const hashedPassword = await hash(password,10);
+        await UserService.updateById(user.id, { password:hashedPassword });
         generateResponse(null, "Password reset successfully", res);
     });
 
