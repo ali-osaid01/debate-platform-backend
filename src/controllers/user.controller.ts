@@ -118,9 +118,9 @@ class UserController {
         generateResponse(usersData,SUCCESS_DATA_SHOW_PASSED,res)
     });
 
-    // Fetch a single user
     public fetchUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const user = await UserService.getOne({ _id: req.user.id });
+        
+        const user = await UserService.getById(req.user.id).lean();
         
         if (!user) {
             return next({

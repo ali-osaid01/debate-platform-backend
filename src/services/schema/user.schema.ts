@@ -24,6 +24,7 @@ export const UserSchema = new Schema<UserDocument>({
     email: { type: String, lowercase: true },
     password: { type: String, require: true, select: false },
     role: { type: String, enum: Object.values(EUserRole), default: "user" },
+    profilePictire: { type: String },
     fcmToken: { type: String, require: true, select: false },
     otp:{ type:Number }
 }, { timestamps: true, versionKey: false });

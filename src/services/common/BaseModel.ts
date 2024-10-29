@@ -55,8 +55,8 @@ export default class BaseModel<T extends Document> {
         return this.model.findOne(filter, projection, options);
     }
 
-    getById(id: string): Promise<T | null> {
-        return this.model.findById(id);
+    getById(id: string,projection?: ProjectionType<T>, options?: QueryOptions<T>): QueryWithHelpers<T | null, T>{
+        return this.model.findById(id,projection,options);
     }
 
     async getAll({ query, page, limit, populate }: GetPaginationQueryParams): Promise<PaginatedData<T>> {
