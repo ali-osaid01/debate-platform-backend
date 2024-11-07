@@ -11,12 +11,10 @@ export interface IEvent  {
   postedBy: Types.ObjectId | string | IUser;
   status:EventStatus
   approvalStatus:ApprovalStatus
-  participants: Types.ObjectId[] | string[] |IUser[]; 
+  participants: Types.ObjectId[] | string[] | IUser[]; 
   isDeleted:boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface EventDoucment extends Document{
-    _id:string
-}
+export type EventDoucment = IEvent & Document;

@@ -1,25 +1,26 @@
 // auth.service.ts
-import { UserService } from "../services";
+import { userRepository } from "../services";
 import { generateOTP } from "../utils/helpers";
 import { hash } from "bcrypt";
-import Response from "../utils/response";  // Assuming response.ts is in utils
+import Response from "../utils/response";  
+import { IUser } from "../interface/user.interface";
 
 class AuthService {
     private responseHandler = new Response();
 
-    public async register(userData: any) {
-        const existingUser = await UserService.getOne({ email: userData.email });
+    public async register(userData: IUser) {
+        const existingUser = await userRepository.getOne({ email: userData.email });
         if (existingUser) {
             return this.responseHandler.sendResponse(409, "User already exists");
         }
 
-        const newUser:any = await UserService.create(userData);
+        const newUser:any = await userRepository.create(userData);
         const accessToken = await newUser.generateAccessToken();
         return this.responseHandler.sendSuccessResponse("Registration successful", { newUser, accessToken });
     }
 
     public async login(email: string, password: string, fcmToken: string) {
-        let user: any = await UserService.getOne({ email }, '+password');
+        let user: any = await userRepository.getOne({ email }, '+password');
         if (!user) {
             return this.responseHandler.sendResponse(400, "Invalid email or password");
         }
@@ -30,23 +31,23 @@ class AuthService {
         }
 
         const accessToken = await user.generateAccessToken();
-        user = await UserService.updateOne({ _id: user._id }, { fcmToken }).select('+fcmtoken');
+        user = await userRepository.updateOne({ _id: user._id }, { fcmToken }).select('+fcmtoken');
         return this.responseHandler.sendSuccessResponse("Login successful", { user, accessToken });
     }
 
     public async sendOtp(email: string) {
-        const user = await UserService.getOne({ email }).lean();
+        const user = await userRepository.getOne({ email }).lean();
         if (!user) {
             return this.responseHandler.sendResponse(400, "User not found");
         }
 
         const otp = generateOTP();
-        await UserService.updateById(user._id, { otp });
+        await userRepository.updateById(user._id, { otp });
         return this.responseHandler.sendSuccessResponse("OTP sent to email", { otp });
     }
 
     public async verifyOtp(email: string, otp: string) {
-        const user: any = await UserService.getOne({ email });
+        const user: any = await userRepository.getOne({ email });
         if (!user) {
             return this.responseHandler.sendResponse(400, "User not found");
         }
@@ -55,14 +56,14 @@ class AuthService {
             return this.responseHandler.sendResponse(401, "Invalid OTP");
         }
 
-        await UserService.updateById(user._id, { otp: null, isVerified: true });
+        await userRepository.updateById(user._id, { otp: null, isVerified: true });
         const token = await user.generateAccessToken();
         return this.responseHandler.sendSuccessResponse("OTP verified successfully", { token });
     }
 
     public async resetPassword(userId: string, newPassword: string) {
         const hashedPassword = await hash(newPassword, 10);
-        await UserService.updateById(userId, { password: hashedPassword });
+        await userRepository.updateById(userId, { password: hashedPassword });
         return this.responseHandler.sendSuccessResponse("Password reset successfully");
     }
 }

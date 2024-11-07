@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import { UserService } from '../services';
+import { userRepository } from '../services';
 import { STATUS_CODES } from '../interface/enum';
 
 export default function authMiddleware(roles: string[]) {
@@ -21,7 +21,7 @@ export default function authMiddleware(roles: string[]) {
 
             req.user = { ...decoded };
 
-            const user = await UserService.getOne({ _id: req.user.id });
+            const user = await userRepository.getOne({ _id: req.user.id });
             if (!user) return next({
                 statusCode: STATUS_CODES.UNAUTHORIZED,
                 message: 'Unauthorized access!'

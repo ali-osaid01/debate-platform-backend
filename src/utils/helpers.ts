@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { UserService } from '../services';
+import { userRepository } from '../services';
 import { hash } from 'bcrypt';
-import { EUserRole, STATUS_CODES } from '../interface/enum';
-
+import { EUserRole } from '../interface/enum';
 
 export const parseBody = (body: any) => {
     if (typeof body === 'string') {
@@ -20,9 +19,10 @@ export const asyncHandler = (requestHandler: RequestHandler) => {
 export const generateOTP = () =>{
     return Math.floor(100000 + Math.random() * 900000);
 }
+
 export const createDefaultAdmin = async () => {
     try {
-        const userExist = await UserService.getOne({ email: process.env.ADMIN_DEFAULT_EMAIL, role: EUserRole.ADMIN });
+        const userExist = await userRepository.getOne({ email: process.env.ADMIN_DEFAULT_EMAIL, role: EUserRole.ADMIN });
         if (userExist) {
             console.log('admin exists ->', userExist.email);
             return
@@ -31,8 +31,7 @@ export const createDefaultAdmin = async () => {
         console.log('admin not exist');
         const password = await hash(process.env.ADMIN_DEFAULT_PASSWORD as string, 10);
 
-        // create default admin
-        await UserService.create({
+        await userRepository.create({
             name: 'Admin',
             email: process.env.ADMIN_DEFAULT_EMAIL,
             password,
