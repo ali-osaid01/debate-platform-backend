@@ -8,17 +8,7 @@ export const parseBody = (body: any) => {
     if (typeof body === 'string') {
         return JSON.parse(body);
     }
-
     return body;
-}
-
-export const generateResponse = (data: any, message: string, res: Response, code = 200) => {
-    return res.status(code).json({
-        code,
-        data,
-        message,
-        status:code === STATUS_CODES.SUCCESS || code === STATUS_CODES.CREATED ? true : false
-    });
 }
 
 export const asyncHandler = (requestHandler: RequestHandler) => {
@@ -30,7 +20,6 @@ export const asyncHandler = (requestHandler: RequestHandler) => {
 export const generateOTP = () =>{
     return Math.floor(100000 + Math.random() * 900000);
 }
-// create default admin
 export const createDefaultAdmin = async () => {
     try {
         const userExist = await UserService.getOne({ email: process.env.ADMIN_DEFAULT_EMAIL, role: EUserRole.ADMIN });

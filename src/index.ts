@@ -4,7 +4,7 @@ import cors from "cors";
 import { createServer } from "http";
 import cookieSession from "cookie-session";
 import requestIp from "request-ip";
-import { connectDB } from "./config/db.config";
+import { connectDB } from "./database/db.config";
 import { log, rateLimiter, notFound, errorHandler } from "./middlewares";
 import API from "./routes"
 import { Server } from "socket.io";

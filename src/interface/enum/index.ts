@@ -16,3 +16,16 @@ export enum STATUS_CODES {
     TOO_MANY_REQUESTS = 429,
     INTERNAL_SERVER_ERROR = 500
 }
+
+export enum EventStatus {
+    CANCELED = 'canceled',       
+    ACTIVE = 'active',           
+    STARTED = 'started',
+    COMPLETED = 'completed',     
+}
+
+export enum ApprovalStatus {
+    PENDING = 'pending',       
+    APPROVED = 'approved',     
+    REJECTED = 'rejected',   
+}

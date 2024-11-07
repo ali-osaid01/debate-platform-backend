@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler, generateResponse } from "../utils/helpers";
-import { STATUS_CODES } from "../interface/enum";
+import { asyncHandler } from "../utils/helpers";
 
 export const defaultHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    generateResponse(null, `Health check passed`, res);   
+    res.status(200).json({message:"Health Check Passed"})   
 });
