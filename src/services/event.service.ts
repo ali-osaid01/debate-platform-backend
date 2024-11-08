@@ -1,6 +1,6 @@
 import { eventRepository, notificationRepository } from ".";
 import { ApiResponse } from "../interface";
-import { ApprovalStatus, ENOTIFICATION_TYPES } from "../interface/enum";
+import { ApprovalStatus, ENOTIFICATION_TYPES, ParticipantStatus } from "../interface/enum";
 import { IEvent } from "../interface/event.interface";
 import Response from "../utils/response";
 
@@ -91,6 +91,29 @@ class EventService {
         }
     };
 
+    toggleUserStatus = async (user: string,id:string,status:ParticipantStatus): Promise<ApiResponse> => {
+        try {
+            
+            const event = await eventRepository.updateById(id, {
+                $set: {
+                  [`participants.${user}`]: status
+                }
+              });
+
+              if (!event) return this.Response.sendResponse(404, { msg: "Event not found" });
+              const username = event.participants.filter((participant)=>participant.user == user);
+
+              notificationRepository.create({
+                receiver:event?.postedBy as string,
+                sender:user as string,
+                title:`${username} has accepted your Invite for ${event.title}`
+              })
+
+            return this.Response.sendSuccessResponse("Event Successfully Deleted", event);
+        } catch (error) {
+            return this.Response.sendResponse(500, { msg: "Error deleting event", error });
+        }
+    };
 }
 
 export default EventService;

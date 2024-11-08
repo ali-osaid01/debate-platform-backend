@@ -62,6 +62,7 @@ class AuthService {
     }
 
     public async resetPassword(userId: string, newPassword: string) {
+        if(!userId) return this.responseHandler.sendResponse(401, "Unauthorized Request");
         const hashedPassword = await hash(newPassword, 10);
         await userRepository.updateById(userId, { password: hashedPassword });
         return this.responseHandler.sendSuccessResponse("Password reset successfully");

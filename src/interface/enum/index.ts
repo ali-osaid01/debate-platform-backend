@@ -31,7 +31,6 @@ export enum ApprovalStatus {
 }
 
 export enum ParticipantStatus {
-    INVITED = "invited",
     CONFIRMED = "confirmed",
     DECLINED = "declined",
     PENDING = "pending"

@@ -32,15 +32,6 @@ class AuthController {
     public resetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const { password } = req.body;
         const user = req.user;
-
-        if (!user) {
-            return res.status(400).json({
-                code: 400,
-                status: false,
-                msg: "User not found"
-            });
-        }
-
         const response = await AuthService.resetPassword(user.id, password);
         res.status(response.code).json(response);
     });

@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
 import { createDefaultAdmin } from "../utils/helpers";
-// import { createDefaultAdmin } from "../utils/helpers";
 
 export const connectDB = async () => {
     try {
@@ -9,8 +8,6 @@ export const connectDB = async () => {
         const conn = await mongoose.connect(DB_URI as string);
         console.log(`DB connected -> ${conn.connection.name}`);
         
-
-        // create default admin
         await createDefaultAdmin();
     } catch (error: any) {
         console.error(`Error: ${error.message}`);

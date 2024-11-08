@@ -29,6 +29,10 @@ export default class EventAPI {
             authMiddleware(Object.values(EUserRole)),
             eventController.toggleEvent
         )
+        this.router.put("/toggle-user-status",
+            authMiddleware(Object.values(EUserRole)),
+            eventController.toggleUserStatus
+        )
 
         this.router.delete("/:id",
             authMiddleware(Object.values(EUserRole)),

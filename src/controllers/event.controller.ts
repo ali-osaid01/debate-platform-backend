@@ -5,9 +5,7 @@ import { IEvent } from "../interface/event.interface";
 import { ApprovalStatus } from "../interface/enum";
 
 class EventController {
-
     private EventService:EventService
-
     constructor(){ this.EventService = new EventService() }
 
     public create = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -24,12 +22,6 @@ class EventController {
         res.status(response.code).json(response);
     });
 
-    // public getEvent = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    //     const { id } = req.params;
-    //     const response = await this.EventService.getEvent(id);
-    //     res.status(response.code).json(response);
-    // });
-
     public update = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         const data = req.body;
@@ -44,9 +36,15 @@ class EventController {
     });
 
     public toggleEvent  = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const user = req.user.id;
+        const user = req.user.id; 
         const {event,status} = req.body;
         const response = await this.EventService.toggleEvent(event,status,user);
+        res.status(response.code).json(response);
+    });
+
+    public toggleUserStatus  = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const {event,status,user} = req.body;
+        const response = await this.EventService.toggleUserStatus(user,event,status);
         res.status(response.code).json(response);
     });
 }
