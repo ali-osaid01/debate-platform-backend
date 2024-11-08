@@ -1,20 +1,25 @@
-import { Types,Document } from "mongoose";
+import { Types, Document } from "mongoose";
 import { IUser } from "./user.interface";
-import { ApprovalStatus, EventStatus } from "./enum";
+import { ApprovalStatus, EventStatus, ParticipantStatus } from "./enum";
 
-export interface IEvent  {
+export interface IParticipant {
+  user: Types.ObjectId | string | IUser;
+  status: ParticipantStatus;
+}
+
+export interface IEvent {
   title: string;
   description: string;
   date: Date;
   location: string;
-  picture:string;
+  picture: string;
   postedBy: Types.ObjectId | string | IUser;
-  status:EventStatus
-  approvalStatus:ApprovalStatus
-  participants: Types.ObjectId[] | string[] | IUser[]; 
-  isDeleted:boolean;
+  status: EventStatus;
+  approvalStatus: ApprovalStatus;
+  participants: IParticipant[]; 
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type EventDoucment = IEvent & Document;
+export type EventDocument = IEvent & Document;

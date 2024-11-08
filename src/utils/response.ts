@@ -3,6 +3,7 @@ import { ERROR_BADREQUEST, ERROR_CONFLICT, ERROR_FORBIDDEN, ERROR_NOTFOUND, ERRO
 
 class Response {
     private responses = {
+      
         201: {
           code: 201,
           msg: SUCCESS_DATA_INSERTION_PASSED,

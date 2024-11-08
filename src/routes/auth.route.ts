@@ -1,8 +1,8 @@
 import { Router } from "express";
-import userController from "../controllers/user.controller";
 import { Validation } from "../middlewares/validation.middleware";
-import authMiddleware from "../middlewares/auth.middleware";
 import { EUserRole } from "../interface/enum";
+import AuthController from "../controllers/auth.controller";
+import authMiddleware from "../middlewares/auth.middleware";
 
 export default class AuthAPI {
     private validateRequest;
@@ -13,30 +13,31 @@ export default class AuthAPI {
     }
 
     setupRoutes() {
+
         this.router.post('/register',
             this.validateRequest,
-            userController.register
+            AuthController.register
         );
 
         this.router.post('/login',
             this.validateRequest,
-            userController.login
+            AuthController.login
         );
 
         this.router.put('/send-otp',
             this.validateRequest,
-            userController.sendOtp
+            AuthController.sendOtp
         )
 
         this.router.put('/verify-otp',
             this.validateRequest,
-            userController.verifyOtp
+            AuthController.verifyOtp
         )
 
         this.router.put('/reset-password',
             this.validateRequest,
             authMiddleware(Object.values(EUserRole)),
-            userController.resetPassword
+            AuthController.resetPassword
         )
     }
 

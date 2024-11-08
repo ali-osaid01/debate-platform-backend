@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
+import {  EventStatus, ApprovalStatus, ParticipantStatus } from '../../interface/enum'; // Adjust import based on your setup
 import { IEvent } from '../../interface/event.interface';
-import { ApprovalStatus, EventStatus } from '../../interface/enum';
 
 export const eventSchema: Schema<IEvent> = new Schema(
   {
@@ -11,7 +11,7 @@ export const eventSchema: Schema<IEvent> = new Schema(
     postedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
     },
     description: {
       type: String,
@@ -26,25 +26,38 @@ export const eventSchema: Schema<IEvent> = new Schema(
     },
     status: {
       type: String,
-      enum: EventStatus,
-      default: EventStatus.ACTIVE
+      enum: Object.values(EventStatus),
+      default: EventStatus.ACTIVE,
     },
     approvalStatus: {
       type: String,
-      enum: ApprovalStatus,
-      default: ApprovalStatus.PENDING
+      enum: Object.values(ApprovalStatus),
+      default: ApprovalStatus.PENDING,
     },
     location: {
       type: String,
     },
     participants: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+      type: [
+        {
+          user: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+          },
+          status: {
+            type: String,
+            enum: Object.values(ParticipantStatus),
+            default: ParticipantStatus.PENDING,
+          },
+        }
+      ],
       default: [],
+      _id: false,
     },
     isDeleted: {
-      type: Boolean
-    }
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
-

@@ -1,4 +1,4 @@
-import { PipelineStage, PopulateOptions, ProjectionType, QueryOptions, RootFilterQuery, UpdateQuery } from "mongoose";
+import { FilterQuery, PipelineStage, PopulateOptions, ProjectionType, QueryOptions, RootFilterQuery, UpdateQuery } from "mongoose";
 import { Document, Model, model, PaginateModel, QueryWithHelpers, Schema } from "mongoose";
 import { getAggregatedPaginatedData, getPaginatedData, mongooseAggregatePlugin, mongoosePlugin, PaginatedData } from "mongoose-pagination-v2";
 import { IPaginationParams } from "../../utils/interfaces";
@@ -50,6 +50,11 @@ export default class BaseModel<T extends Document> {
     create(obj: Partial<T>): Promise<T> {
         return this.model.create(obj);
     }
+    
+    async createMany<T>(data: T[]): Promise<T[]> {
+        const createdEntity = await this.model.insertMany(data);
+        return createdEntity as T[];
+      }
 
     getOne(filter?: RootFilterQuery<T>, projection?: ProjectionType<T>, options?: QueryOptions<T>): QueryWithHelpers<T | null, T> {
         return this.model.findOne(filter, projection, options);
@@ -93,4 +98,8 @@ export default class BaseModel<T extends Document> {
     deleteOne(filter: RootFilterQuery<T>): QueryWithHelpers<T | null, T> {
         return this.model.findOneAndDelete(filter);
     }
+
+    async getCount<T>(filter?: RootFilterQuery<T>): Promise<number> {
+        return (await this.model.countDocuments(filter || {})) || 0;
+      }
 }

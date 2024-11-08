@@ -3,6 +3,8 @@ import { Request, Response, NextFunction, Application, Router } from "express";
 import RootAPI from "./root.route";
 import AuthAPI from "./auth.route";
 import UserAPI from "./user.route";
+import EventAPI from "./event.route";
+import NotificationAPI from "./notification.route";
 
 export default class API {
     router: Router;
@@ -20,6 +22,9 @@ export default class API {
         routeGroups.push(new RootAPI(router));
         routeGroups.push(new AuthAPI(router));
         routeGroups.push(new UserAPI(router));
+        routeGroups.push(new EventAPI(router))
+        routeGroups.push(new NotificationAPI(router));
+
     }
 
     setContentType(req: Request, res: Response, next: NextFunction) {
