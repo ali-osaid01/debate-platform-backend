@@ -31,6 +31,7 @@ export const UserSchema = new Schema<UserDocument>({
     isProfileCompleted:{type:Boolean},
     profilePictire: { type: String },
     fcmToken: { type: String, require: true, select: false },
+    location:{type:String},
     otp:{ type:Number },
     settings: { 
         notification:{ type:Boolean,default:true }
