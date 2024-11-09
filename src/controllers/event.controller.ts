@@ -49,4 +49,4 @@ class EventController {
     });
 }
 
-export default new EventController();
+export default EventController

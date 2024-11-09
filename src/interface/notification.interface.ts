@@ -1,9 +1,10 @@
 import { Document, ObjectId } from "mongoose";
+import { ENOTIFICATION_TYPES } from "./enum";
 
 export interface INotification {
     receiver: string | ObjectId;
     sender: string | ObjectId;
-    type: number;
+    type: ENOTIFICATION_TYPES;
     content: string;
     title: string;
     isRead: boolean;

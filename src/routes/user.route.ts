@@ -4,8 +4,10 @@ import { EUserRole } from "../interface/enum";
 import UserController from "../controllers/user.controller";
 
 export default class UserAPI {
+    private UserController:UserController
     constructor(private readonly router: Router) {
         this.router = Router();
+        this.UserController = new UserController();
         this.setupRoutes();
     }
 
@@ -13,7 +15,7 @@ export default class UserAPI {
         
         this.router.get('/', 
         authMiddleware(Object.values(EUserRole)),
-        UserController.index);
+        this.UserController.index);
 
     }
 

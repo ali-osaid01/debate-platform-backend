@@ -1,42 +1,44 @@
 import { Router } from "express";
-import eventController from "../controllers/event.controller";
+import EventController from "../controllers/event.controller";
 import authMiddleware from "../middlewares/auth.middleware";
 import { EUserRole } from "../interface/enum";
 
 export default class EventAPI {
+    private EventController:EventController
     constructor(private readonly router: Router) {
         this.router = Router();
+        this.EventController = new EventController()
         this.setupRoutes();
     }
 
     setupRoutes() {
         this.router.get("/",
             authMiddleware(Object.values(EUserRole)),
-            eventController.index
+            this.EventController.index
         )
 
         this.router.post("/",
             authMiddleware(Object.values(EUserRole)),
-            eventController.create
+            this.EventController.create
         )
 
         this.router.put("/",
             authMiddleware(Object.values(EUserRole)),
-            eventController.update
+            this.EventController.update
         )
 
         this.router.put("/toggle-status",
             authMiddleware(Object.values(EUserRole)),
-            eventController.toggleEvent
+            this.EventController.toggleEvent
         )
         this.router.put("/toggle-user-status",
             authMiddleware(Object.values(EUserRole)),
-            eventController.toggleUserStatus
+            this.EventController.toggleUserStatus
         )
 
         this.router.delete("/:id",
             authMiddleware(Object.values(EUserRole)),
-            eventController.delete
+            this.EventController.delete
         )
     }
 

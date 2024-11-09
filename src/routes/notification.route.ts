@@ -1,17 +1,20 @@
 import { Router } from "express";
 import authMiddleware from "../middlewares/auth.middleware";
 import { EUserRole } from "../interface/enum";
-import notificationController from "../controllers/notification.controller";
+import NotificationController from "../controllers/notification.controller";
 
 export default class NotificationAPI {
+
+    private NotificationController:NotificationController
+    
     constructor(private readonly router: Router) {
         this.router = Router();
+        this.NotificationController = new NotificationController();
         this.setupRoutes();
     }
 
     setupRoutes() {
-        this.router.get("/",authMiddleware(Object.values(EUserRole)),notificationController.index)
-
+        this.router.get("/",authMiddleware(Object.values(EUserRole)),this.NotificationController.index)
     }
 
     getRouter() {

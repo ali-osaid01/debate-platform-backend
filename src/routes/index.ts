@@ -5,6 +5,7 @@ import AuthAPI from "./auth.route";
 import UserAPI from "./user.route";
 import EventAPI from "./event.route";
 import NotificationAPI from "./notification.route";
+import MediaAPi from "./media.route";
 
 export default class API {
     router: Router;
@@ -24,7 +25,7 @@ export default class API {
         routeGroups.push(new UserAPI(router));
         routeGroups.push(new EventAPI(router))
         routeGroups.push(new NotificationAPI(router));
-
+        routeGroups.push(new MediaAPi(router));
     }
 
     setContentType(req: Request, res: Response, next: NextFunction) {

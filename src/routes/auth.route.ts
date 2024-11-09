@@ -6,9 +6,11 @@ import authMiddleware from "../middlewares/auth.middleware";
 
 export default class AuthAPI {
     private validateRequest;
+    private AuthController:AuthController
     constructor(private readonly router: Router) {
-        this.router = Router();
         this.validateRequest = new Validation().reporter(true, "auth");
+        this.AuthController = new AuthController();
+        this.router = Router();
         this.setupRoutes();
     }
 
@@ -16,28 +18,28 @@ export default class AuthAPI {
 
         this.router.post('/register',
             this.validateRequest,
-            AuthController.register
+            this.AuthController.register
         );
 
         this.router.post('/login',
             this.validateRequest,
-            AuthController.login
+            this.AuthController.login
         );
 
         this.router.put('/send-otp',
             this.validateRequest,
-            AuthController.sendOtp
+            this.AuthController.sendOtp
         )
 
         this.router.put('/verify-otp',
             this.validateRequest,
-            AuthController.verifyOtp
+            this.AuthController.verifyOtp
         )
 
         this.router.put('/reset-password',
             this.validateRequest,
             authMiddleware(Object.values(EUserRole)),
-            AuthController.resetPassword
+            this.AuthController.resetPassword
         )
     }
 
