@@ -10,22 +10,21 @@ class LikeService {
         this.Response = new Response(); 
     }
 
-    public toggleLike = async (userId: string, eventId: string): Promise<ApiResponse> => {
+    public toggleLike = async (user: string, event: string): Promise<ApiResponse> => {
         try {
-            const existingLike = await likeRepository.getOne({ user: userId, event: eventId });
+            const existingLike = await likeRepository.getOne({ user,event });
     
             if (existingLike) {
                 const status = existingLike.status === true ? false : true;
                 const like = await likeRepository.updateOne(
-                    { user: userId, event: eventId }, 
+                    { user,event }, 
                     { status } 
                 );
                 return this.Response.sendSuccessResponse("Like toggled successfully", {like});
             }
-            const payload: ILike = { user: userId, event: eventId, status: true};
-            
-            const createdLike = await likeRepository.create(payload);
-            return this.Response.sendSuccessResponse("Like added successfully", createdLike);
+            const payload = { user, event};
+            const like = await likeRepository.create(payload);
+            return this.Response.sendSuccessResponse("Like added successfully", {like});
         } catch (error) {
             console.error('Error toggling like:', error);
             return this.Response.sendResponse(500, { msg: "Error toggling like", error });

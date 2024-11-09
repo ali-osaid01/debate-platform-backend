@@ -10,8 +10,8 @@ class LikeController {
     }
 
     public create = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { userId, eventId } = req.body; 
-        const response = await this.likeService.toggleLike(userId, eventId);
+        const { user, event } = req.body; 
+        const response = await this.likeService.toggleLike(user, event);
         res.status(response.code).json(response);
     });
 }

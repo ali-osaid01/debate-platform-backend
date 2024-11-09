@@ -1,3 +1,4 @@
+import { PipelineStage } from "mongoose";
 import { eventRepository, notificationRepository } from ".";
 import { ApiResponse } from "../interface";
 import { ApprovalStatus, ENOTIFICATION_TYPES, ParticipantStatus } from "../interface/enum";
@@ -11,7 +12,47 @@ class EventService {
 
     index = async (filter: Partial<IEvent>, page: number, limit: number): Promise<ApiResponse> => {
         try {
-            const events = await eventRepository.getAll({ query: filter, page, limit,populate: { path: 'participants.user postedBy', select: 'name email profilePictire' }});
+            const query:PipelineStage[] = [];
+            
+            query.push({
+                $lookup: {
+                    from: 'users',
+                    localField: 'postedBy',
+                    foreignField: '_id',
+                    as: 'postedBy',
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 1,
+                                name: 1,
+                                email: 1,
+                                profilePicture: 1
+                            }
+                        }
+                    ]
+                }
+            });
+            
+            query.push({
+                $lookup: {
+                    from: 'users',
+                    localField: 'participants.user',  
+                    foreignField: '_id',         
+                    as: 'attendees',                   
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 1,
+                                name: 1,
+                                email: 1,
+                                profilePicture: 1
+                            }
+                        }
+                    ]
+                }
+            });
+            
+            const events = await eventRepository.getAllAggregated({page,limit,query});
             return this.Response.sendSuccessResponse("Events Fetch Successfully", events);
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
@@ -91,27 +132,30 @@ class EventService {
         }
     };
 
-    toggleUserStatus = async (user: string,id:string,status:ParticipantStatus): Promise<ApiResponse> => {
+    toggleUserStatus = async (user: string, id: string, status: ParticipantStatus): Promise<ApiResponse> => {
         try {
-            
             const event = await eventRepository.updateById(id, {
                 $set: {
-                  [`participants.${user}`]: status
+                    "participants.$[elem].status": status
                 }
-              });
-
-              if (!event) return this.Response.sendResponse(404, { msg: "Event not found" });
-              const username = event.participants.filter((participant)=>participant.user == user);
-
-              notificationRepository.create({
-                receiver:event?.postedBy as string,
-                sender:user as string,
-                title:`${username} has accepted your Invite for ${event.title}`
-              })
-
-            return this.Response.sendSuccessResponse("Event Successfully Deleted", event);
+            }, {
+                arrayFilters: [{ "elem.user": user }]
+            });
+    
+            if (!event) return this.Response.sendResponse(404, { msg: "Event not found" });
+            const content = `Participant has ${status === 'confirmed' ? 'accepted' : 'rejected'} your invite for ${event.title}`;
+    
+            await notificationRepository.create({
+                receiver: event?.postedBy as string,  
+                sender: user as string,
+                title: `Participant has ${status === 'confirmed' ? 'accepted' : 'rejected'} your Invite for ${event.title}`,
+                content: content, 
+            });
+    
+            return this.Response.sendSuccessResponse("Event status updated and notification sent", event);
         } catch (error) {
-            return this.Response.sendResponse(500, { msg: "Error deleting event", error });
+            console.error("Error toggling user status:", error);
+            return this.Response.sendResponse(500, { msg: "Error updating event status", error });
         }
     };
 }

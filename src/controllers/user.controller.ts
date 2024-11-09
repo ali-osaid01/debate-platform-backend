@@ -13,6 +13,13 @@ class UserController {
         const response = await this.UserService.index(filter,Number(page),Number(limit));
         res.status(response.code).json(response);
     });
+    
+    public update = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const payload = req.body;
+        const id = req.user.id
+        const response = await this.UserService.update(id,payload);
+        res.status(response.code).json(response);
+    });
 }
 
 export default UserController

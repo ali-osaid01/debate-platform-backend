@@ -24,9 +24,17 @@ export const UserSchema = new Schema<UserDocument>({
     email: { type: String, lowercase: true },
     password: { type: String, require: true, select: false },
     role: { type: String, enum: Object.values(EUserRole), default: "user" },
+    bio: { type: String },
+    dob: { type: Date },
+    gender: { type: String },
+    phone: { type: String },
+    isProfileCompleted:{type:Boolean},
     profilePictire: { type: String },
     fcmToken: { type: String, require: true, select: false },
-    otp:{ type:Number }
+    otp:{ type:Number },
+    settings: { 
+        notification:{ type:Boolean,default:true }
+    },
 }, { timestamps: true, versionKey: false });
 
 UserSchema.index({ email: 1 }, { unique: true });

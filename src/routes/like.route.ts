@@ -3,7 +3,7 @@ import { EUserRole } from "../interface/enum";
 import authMiddleware from "../middlewares/auth.middleware";
 import LikeController from "../controllers/like.controller";
 
-export default class NotificationAPI {
+export default class LikeAPI {
 
     private LikeController:LikeController
     
