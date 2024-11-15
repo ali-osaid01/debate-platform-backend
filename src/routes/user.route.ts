@@ -14,9 +14,16 @@ export default class UserAPI {
     setupRoutes() {
         
         this.router.get('/', 
-        authMiddleware(Object.values(EUserRole)),
-        this.UserController.index);
+            authMiddleware(Object.values(EUserRole)),
+            this.UserController.index);
+        
+        this.router.put('/', 
+            authMiddleware(Object.values(EUserRole)),
+            this.UserController.update);
 
+        this.router.get('/authenticated', 
+            authMiddleware(Object.values(EUserRole)),
+            this.UserController.authenticatedUser);
     }
 
     getRouter() {

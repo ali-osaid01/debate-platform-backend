@@ -20,6 +20,13 @@ class UserController {
         const response = await this.UserService.update(id,payload);
         res.status(response.code).json(response);
     });
+
+    public authenticatedUser = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
+        const {userId} = req.query
+        const id = req.user.id
+        const response = await this.UserService.authenticatedUser(userId? String(userId) : id);
+        res.status(response.code).json(response);
+    });
 }
 
 export default UserController

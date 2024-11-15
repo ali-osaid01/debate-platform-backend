@@ -12,7 +12,7 @@ export interface IUser {
     location:string;
     gender:string;
     isProfileCompleted:boolean
-    profilePictire:string;
+    profilePicture:string;
     password: string;
     role: string;
     otp:number

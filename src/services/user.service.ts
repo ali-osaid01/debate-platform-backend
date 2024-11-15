@@ -24,6 +24,16 @@ class UserService {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }
     }
+    public async authenticatedUser (id:string):Promise<ApiResponse> {
+        try {
+            const user = await userRepository.getById(id)
+            if(!user) return this.Response.sendResponse(401,"Unauthorized access")
+            return this.Response.sendSuccessResponse("Users Fetch Successfully",user );
+        } catch (error) {
+            return this.Response.sendResponse(500, { msg: "Something went wrong", error });
+        }
+    }
+    
 }
 
 export default UserService
