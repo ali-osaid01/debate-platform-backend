@@ -31,6 +31,7 @@ class AuthService {
         }
 
         const accessToken = await user.generateAccessToken();
+        
         user = await userRepository.updateOne({ _id: user._id }, { fcmToken }).select('+fcmtoken');
         return this.responseHandler.sendSuccessResponse("Login successful", { user, accessToken });
     }

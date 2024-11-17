@@ -39,10 +39,11 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieSession({
     name: 'session',
     keys: [process.env.COOKIE_KEY as string],
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    
 }));
 
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(rateLimiter);
 
 app.get('/', (req, res) => res.json(`Welcome to ${process.env.APP_NAME}!`));

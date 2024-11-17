@@ -17,6 +17,9 @@ class AuthController {
     public login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, fcmToken } = req.body;
         const response = await this.AuthService.login(email, password, fcmToken);
+        if(response.code == 200){
+            res.cookie('accessToken', String((response.data as { accessToken: string }).accessToken),{httpOnly:true});
+        }
         res.status(response.code).json(response);
     });
 
