@@ -8,6 +8,7 @@ export const notificationSchema: Schema = new Schema(
       type: { type: Number, enum: ENOTIFICATION_TYPES},
       content: { type: String, required: true },
       title: { type: String, default: null },
+      metadata: { type: String, default: null },
       isRead: { type: Boolean, default: false },
     },
     {timestamps:true}

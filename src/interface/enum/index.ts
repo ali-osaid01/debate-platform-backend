@@ -42,4 +42,5 @@ export enum ParticipantStatus {
     EVENT_REJECTED = 3,
     EVENT_CANCELLED = 4,
     EVENT_DELETED = 5,
+    LIKE=7
   }

@@ -12,8 +12,9 @@ class EventService {
 
     index = async (filter: Partial<IEvent>, page: number, limit: number): Promise<ApiResponse> => {
         try {
-            const query:PipelineStage[] = [];
-            
+            const query: PipelineStage[] = [];
+    
+            // Lookup for the 'postedBy' field to include user details
             query.push({
                 $lookup: {
                     from: 'users',
@@ -32,33 +33,75 @@ class EventService {
                     ]
                 }
             });
-            
-            query.push({
-                $lookup: {
-                    from: 'users',
-                    localField: 'participants.user',  
-                    foreignField: '_id',         
-                    as: 'attendees',                   
-                    pipeline: [
-                        {
-                            $project: {
-                                _id: 1,
-                                name: 1,
-                                email: 1,
-                                profilePicture: 1
+    
+            // Lookup and unwind for 'participants' to include user details for each participant
+            query.push(
+                {
+                    $unwind: "$participants"  // Flatten the participants array
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "participants.user",
+                        foreignField: "_id",
+                        as: "userInfo",  // Lookup for user details
+                        pipeline: [
+                            {
+                                $project: {
+                                    name: 1,
+                                    email: 1,
+                                    profilePicture: 1
+                                }
                             }
+                        ]
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$userInfo",  // Unwind userInfo array
+                        preserveNullAndEmptyArrays: true  // Keep the original participant if no match is found
+                    }
+                },
+                {
+                    $addFields: {
+                        "participants.userInfo": {  // Add user info directly under participants
+                            name: "$userInfo.name",
+                            email: "$userInfo.email",
+                            profilePicture: "$userInfo.profilePicture"
                         }
-                    ]
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        postedBy: { $first: "$postedBy" }, 
+                        description: { $first: "$description" },
+                        picture: { $first: "$picture" },
+                        date: { $first: "$date" },
+                        status: { $first: "$status" },
+                        approvalStatus: { $first: "$approvalStatus" },
+                        participants: { $push: "$participants" }, 
+                        location: { $first: "$location" },
+                        isDeleted: { $first: "$isDeleted" },
+                        createdAt: { $first: "$createdAt" },
+                        updatedAt: { $first: "$updatedAt" },
+                    }
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: { $mergeObjects: ["$$ROOT", { participants: "$participants" }] }
+                    }
                 }
-            });
-            
-            const events = await eventRepository.getAllAggregated({page,limit,query});
+            );
+    
+            // Execute the aggregation query
+            const events = await eventRepository.getAllAggregated({ page, limit, query });
             return this.Response.sendSuccessResponse("Events Fetch Successfully", events);
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }
     };
-
+    
     create = async (data: Partial<IEvent>): Promise<ApiResponse> => {
         try {
             const event = await eventRepository.create(data);
@@ -97,7 +140,7 @@ class EventService {
             const notificationTitle = isApproved ? "Event Approved" : "Event Rejected";
             const notificationContent = isApproved ? "Admin has approved the event." : "Admin has rejected the event.";
             const notificationType = isApproved ? ENOTIFICATION_TYPES.EVENT_ACCEPTED : ENOTIFICATION_TYPES.EVENT_REJECTED;
-            
+
             await notificationRepository.create({
                 receiver: event.postedBy as string,
                 sender: user,
@@ -113,16 +156,17 @@ class EventService {
                         sender: event.postedBy as string,
                         title: "Event Invitation",
                         content: `${event.postedBy} has invite you to join the event for debate on ${event.title}`,
-                        type: ENOTIFICATION_TYPES.EVENT_ACCEPTED
+                        type: ENOTIFICATION_TYPES.EVENT_INVITATION,
+                        metadata: event._id as string
                     });
                 }
             }
 
-            return this.Response.sendSuccessResponse( 
-             "Event Status Updated Successfully",
-             event
+            return this.Response.sendSuccessResponse(
+                "Event Status Updated Successfully",
+                event
             );
-            
+
         } catch (error) {
             console.error("Error toggling event status:", error);
             return this.Response.sendResponse(500, {
@@ -141,17 +185,17 @@ class EventService {
             }, {
                 arrayFilters: [{ "elem.user": user }]
             });
-    
+
             if (!event) return this.Response.sendResponse(404, { msg: "Event not found" });
             const content = `Participant has ${status === 'confirmed' ? 'accepted' : 'rejected'} your invite for ${event.title}`;
-    
+
             await notificationRepository.create({
-                receiver: event?.postedBy as string,  
+                receiver: event?.postedBy as string,
                 sender: user as string,
                 title: `Participant has ${status === 'confirmed' ? 'accepted' : 'rejected'} your Invite for ${event.title}`,
-                content: content, 
+                content: content,
             });
-    
+
             return this.Response.sendSuccessResponse("Event status updated and notification sent", event);
         } catch (error) {
             console.error("Error toggling user status:", error);

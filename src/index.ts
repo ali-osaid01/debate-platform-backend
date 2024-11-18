@@ -1,14 +1,14 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { createServer } from "http";
+import API from "./routes"
 import cookieSession from "cookie-session";
 import requestIp from "request-ip";
-import { connectDB } from "./database/db.config";
-import { log, rateLimiter, notFound, errorHandler } from "./middlewares";
-import API from "./routes"
 import { Server } from "socket.io";
+import { createServer } from "http";
+import { connectDB } from "./database/db.config";
 import { initializeSocketIO } from "./services/socket";
+import { log, rateLimiter, notFound, errorHandler } from "./middlewares";
 
 
 dotenv.config();
@@ -40,7 +40,6 @@ app.use(cookieSession({
     name: 'session',
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    
 }));
 
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));

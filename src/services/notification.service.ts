@@ -10,7 +10,7 @@ class NotificationService {
 
     index = async (filter: Partial<INotification>, page: number, limit: number): Promise<ApiResponse> => {
         try {
-            const notification = await notificationRepository.getAll({ query: filter, page, limit });
+            const notification = await notificationRepository.getAll({ query: filter, page, limit, populate:{path:"sender",select:"name email profilePicture"}});
             return this.Response.sendSuccessResponse("Events Fetch Successfully", notification);
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
