@@ -2,6 +2,7 @@ import { ApiResponse } from "../interface";
 import { ICategory } from "../interface/category.interface";
 import { categoryRepository } from "./index";
 import Response from "../utils/response";
+import { PipelineStage } from "mongoose";
 
 class CategoryService {
     private Response: Response;
@@ -16,8 +17,13 @@ class CategoryService {
         return this.Response.sendSuccessResponse("Category Successfully Created",category);
     }
 
-    index = async (page:number,limit:number,filter:Partial<ICategory>) => {  
-        const result = await categoryRepository.getAll({query:filter,page,limit});
+    createMany = async (payload: ICategory[]): Promise<ApiResponse> => {
+        const createdCategories = await categoryRepository.createMany(payload); // Bulk create new categories
+        return this.Response.sendSuccessResponse("Categories successfully created", createdCategories);
+    };
+
+    index = async (page:number,limit:number,filter:PipelineStage[]) => {  
+        const result = await categoryRepository.getAllAggregated({query:filter,page,limit});
         if(result.data.length == 0) return this.Response.sendResponse(404,"Category Not Found")
         return this.Response.sendSuccessResponse("category fetch successfully",result);
     }

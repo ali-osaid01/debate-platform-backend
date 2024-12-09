@@ -16,6 +16,7 @@ export default class CategoryAPI {
     setupRoutes() {
         this.router.get("/",authMiddleware(Object.values(EUserRole)),this.CategoryController.index)
         this.router.post("/",authMiddleware(Object.values(EUserRole)),this.CategoryController.create)
+        this.router.post("/create-many",authMiddleware(Object.values(EUserRole)),this.CategoryController.createMany)
         this.router.delete("/:id",authMiddleware(Object.values(EUserRole)),this.CategoryController.delete)
     }
 
