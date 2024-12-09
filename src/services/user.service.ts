@@ -19,7 +19,7 @@ class UserService {
     public async update (id:string,payload:IUser):Promise<ApiResponse> {
         try {
             const users = await userRepository.updateById(id,payload)
-            return this.Response.sendSuccessResponse("Users Fetch Successfully",{users});
+            return this.Response.sendSuccessResponse("Users Update Successfully",{users});
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }

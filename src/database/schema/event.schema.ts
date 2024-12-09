@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import {  EventStatus, ApprovalStatus, ParticipantStatus } from '../../interface/enum'; // Adjust import based on your setup
+import {  EventStatus, ApprovalStatus, ParticipantStatus, EVENT_TYPE } from '../../interface/enum'; 
 import { IEvent } from '../../interface/event.interface';
 
 export const eventSchema: Schema<IEvent> = new Schema(
@@ -12,6 +12,10 @@ export const eventSchema: Schema<IEvent> = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+    },
+    type:{
+      type:Number,
+      enum:EVENT_TYPE
     },
     description: {
       type: String,

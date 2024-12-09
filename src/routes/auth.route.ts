@@ -21,6 +21,11 @@ export default class AuthAPI {
             this.AuthController.register
         );
 
+        this.router.post('/google-auth',
+            this.validateRequest,
+            this.AuthController.googleAuth
+        )
+        
         this.router.post('/login',
             this.validateRequest,
             this.AuthController.login
@@ -41,6 +46,7 @@ export default class AuthAPI {
             authMiddleware(Object.values(EUserRole)),
             this.AuthController.resetPassword
         )
+   
     }
 
     getRouter() {

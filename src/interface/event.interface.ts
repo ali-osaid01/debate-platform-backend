@@ -10,6 +10,7 @@ export interface IParticipant {
 export interface IEvent {
   title: string;
   description: string;
+  type: number
   date: Date;
   location: string;
   picture: string;

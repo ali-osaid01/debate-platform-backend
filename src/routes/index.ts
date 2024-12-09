@@ -7,6 +7,8 @@ import EventAPI from "./event.route";
 import NotificationAPI from "./notification.route";
 import MediaAPI from "./media.route";
 import LikeAPI from "./like.route";
+import FollowAPI from "./follow.route";
+import CategoryAPI from "./category.route";
 
 export default class API {
     router: Router;
@@ -28,6 +30,8 @@ export default class API {
         routeGroups.push(new NotificationAPI(router));
         routeGroups.push(new MediaAPI(router));
         routeGroups.push(new LikeAPI(router));
+        routeGroups.push(new FollowAPI(router))
+        routeGroups.push(new CategoryAPI(router))
     }
 
     setContentType(req: Request, res: Response, next: NextFunction) {

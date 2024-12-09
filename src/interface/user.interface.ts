@@ -4,7 +4,12 @@ export interface IUser {
     name: string;
     email: string;
     bio:string;
+    website:string
+    socialAuth:string
     dob:Date;
+    followingCount:number
+    followerCount:number
+    postCount:number
     phone:string
     settings:{
         notification:boolean

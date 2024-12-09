@@ -131,10 +131,13 @@ class EventService {
     };
 
     toggleEvent = async (id: string, status: string, user: string): Promise<ApiResponse> => {
-        try {
+        try {   
+            const checkEvent = await eventRepository.getById(id);
+
+            if (!checkEvent) return this.Response.sendResponse(404, { msg: "Event not found" });
+
             const event = await eventRepository.updateById(id, { approvalStatus: status });
 
-            if (!event) return this.Response.sendResponse(404, { msg: "Event not found" });
 
             const isApproved = status === ApprovalStatus.APPROVED;
             const notificationTitle = isApproved ? "Event Approved" : "Event Rejected";
@@ -142,29 +145,29 @@ class EventService {
             const notificationType = isApproved ? ENOTIFICATION_TYPES.EVENT_ACCEPTED : ENOTIFICATION_TYPES.EVENT_REJECTED;
 
             await notificationRepository.create({
-                receiver: event.postedBy as string,
+                receiver: event?.postedBy as string,
                 sender: user,
                 title: notificationTitle,
                 content: notificationContent,
                 type: notificationType
             });
 
-            if (isApproved && Array.isArray(event.participants) && event.participants.length > 0) {
-                for (const participant of event.participants) {
+            if (isApproved && Array.isArray(event?.participants) && event?.participants.length > 0) {
+                for (const participant of event?.participants) {
                     await notificationRepository.create({
                         receiver: participant.user as string,
-                        sender: event.postedBy as string,
+                        sender: event?.postedBy as string,
                         title: "Event Invitation",
-                        content: `${event.postedBy} has invite you to join the event for debate on ${event.title}`,
+                        content: `${event?.postedBy} has invite you to join the event for debate on ${event?.title}`,
                         type: ENOTIFICATION_TYPES.EVENT_INVITATION,
-                        metadata: event._id as string
+                        metadata: event?._id as string
                     });
                 }
             }
 
             return this.Response.sendSuccessResponse(
                 "Event Status Updated Successfully",
-                event
+                event!
             );
 
         } catch (error) {

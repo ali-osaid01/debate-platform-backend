@@ -111,8 +111,10 @@ const googleAuth = yup.object().shape({
     .object()
     .shape({
       email: yup.string().email().required(),
-      socialAuthId: yup.string().required(),
-      fcmToken: yup.string().required(),
+      socialAuth: yup.string().required(),
+      fcmToken: yup.string().notRequired(),
+      profilePicture:yup.string().notRequired(),
+      name:yup.string().notRequired(),
     })
     .noUnknown(),
   query: yup.object().noUnknown(),

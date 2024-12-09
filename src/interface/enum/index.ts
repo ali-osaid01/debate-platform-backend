@@ -18,29 +18,36 @@ export enum STATUS_CODES {
 }
 
 export enum EventStatus {
-    ACTIVE = 'active',           
-    CANCELED = 'canceled',       
+    ACTIVE = 'active',
+    CANCELED = 'canceled',
     STARTED = 'started',
-    COMPLETED = 'completed',     
+    COMPLETED = 'completed',
 }
 
 export enum ApprovalStatus {
-    PENDING = 'pending',       
-    APPROVED = 'approved',     
-    REJECTED = 'rejected',   
+    PENDING = 'pending',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
 }
 
 export enum ParticipantStatus {
     CONFIRMED = "confirmed",
     DECLINED = "declined",
     PENDING = "pending"
-  }
+}
 
-  export enum ENOTIFICATION_TYPES {
+export enum ENOTIFICATION_TYPES {
     EVENT_ACCEPTED = 1,
     EVENT_INVITATION = 2,
     EVENT_REJECTED = 3,
     EVENT_CANCELLED = 4,
     EVENT_DELETED = 5,
-    LIKE=7
-  }
+    FOLLOW = 6,
+    LIKE = 7,
+    UN_FOLLOW = 8
+}
+
+export enum EVENT_TYPE {
+    PRIVATE = 1,
+    PUBLIC = 2
+}

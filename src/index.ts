@@ -9,7 +9,7 @@ import { createServer } from "http";
 import { connectDB } from "./database/db.config";
 import { initializeSocketIO } from "./services/socket";
 import { log, rateLimiter, notFound, errorHandler } from "./middlewares";
-
+import cookiesParser from 'cookie-parser'
 
 dotenv.config();
 
@@ -36,8 +36,10 @@ initializeSocketIO(io);
 app.use(requestIp.mw());
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(cookiesParser());
 app.use(cookieSession({
     name: 'session',
+    domain:"http://localhost:3000",
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000,
 }));
