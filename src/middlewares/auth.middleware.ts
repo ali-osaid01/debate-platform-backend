@@ -7,6 +7,8 @@ export default function authMiddleware(roles: string[]) {
     return (req: Request, res: Response, next: NextFunction) => {
         
         const accessToken = req.headers.authorization?.split(' ')[1] || req.session?.accessToken || req.cookies?.accessToken;
+        console.log("accessToken",accessToken)
+        console.log("COOKIES ->",req.cookies)
         if (!accessToken) return next({
             statusCode: STATUS_CODES.UNAUTHORIZED,
             message: 'Authorization failed!'
