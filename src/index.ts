@@ -40,9 +40,12 @@ app.use(cookiesParser());
 
 app.use(cookieSession({
     name: 'session',
-    domain:"https://debate-platform.vercel.app",
+    domain: 'debate-platform.vercel.app', // Set only the domain part, no 'https://' or path
     keys: [process.env.COOKIE_KEY as string],
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days
+    secure: true,  // Ensure this is true in production
+    httpOnly: true,  // This makes the cookie inaccessible to JavaScript
+    sameSite: 'none',  // This allows the cookie to be sent in cross-origin requests
 }));
 
 app.use(cors({ origin: ["http://localhost:3000","https://debate-platform.vercel.app"], credentials: true }));
