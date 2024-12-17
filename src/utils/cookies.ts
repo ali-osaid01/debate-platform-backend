@@ -2,7 +2,7 @@ import { Response } from "express";
 
 export const setAccessTokenCookie = (res: Response, accessToken: string) => {
     res.cookie('accessToken', accessToken, {
-        httpOnly: true, 
+        httpOnly: false, 
         secure: true, 
         sameSite: 'none',
         path: '/', 
