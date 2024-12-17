@@ -40,7 +40,7 @@ app.use(cookiesParser());
 
 app.use(cookieSession({
     name: 'session',
-    domain: 'https://debate-platform.vercel.app', 
+    domain: '.debate-platform.vercel.app', 
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days
     secure: true,  // Ensure this is true in production
@@ -48,7 +48,7 @@ app.use(cookieSession({
     sameSite: 'none',  // This allows the cookie to be sent in cross-origin requests
 }));
 
-app.use(cors({ origin: ["http://localhost:3000","https://debate-platform.vercel.app"], credentials: true }));
+app.use(cors({ origin: ["https://debate-platform.vercel.app"], credentials: true }));
 app.use(rateLimiter);
 
 app.get('/', (req, res) => res.json(`Welcome to ${process.env.APP_NAME}!`));
