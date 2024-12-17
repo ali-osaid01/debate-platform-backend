@@ -6,5 +6,6 @@ export const setAccessTokenCookie = (res: Response, accessToken: string) => {
         secure: true, 
         sameSite: 'none',
         path: '/', 
+        domain: 'https://debate-platform.vercel.app',
     });
 };
