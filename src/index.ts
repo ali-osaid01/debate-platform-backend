@@ -37,14 +37,15 @@ app.use(requestIp.mw());
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookiesParser());
+
 app.use(cookieSession({
     name: 'session',
-    domain:"http://localhost:3000",
+    domain:"https://debate-platform.vercel.app",
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000,
 }));
 
-app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000","https://debate-platform.vercel.app"], credentials: true }));
 app.use(rateLimiter);
 
 app.get('/', (req, res) => res.json(`Welcome to ${process.env.APP_NAME}!`));
