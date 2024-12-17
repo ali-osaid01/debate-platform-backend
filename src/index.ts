@@ -40,7 +40,7 @@ app.use(cookiesParser());
 
 app.use(cookieSession({
     name: 'session',
-    domain: 'debate-platform.vercel.app', // Set only the domain part, no 'https://' or path
+    domain: 'https://debate-platform.vercel.app', 
     keys: [process.env.COOKIE_KEY as string],
     maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days
     secure: true,  // Ensure this is true in production
