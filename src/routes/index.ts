@@ -9,6 +9,7 @@ import MediaAPI from "./media.route";
 import LikeAPI from "./like.route";
 import FollowAPI from "./follow.route";
 import CategoryAPI from "./category.route";
+import SubscriptionAPI from "./subscription.route";
 
 export default class API {
     router: Router;
@@ -32,6 +33,7 @@ export default class API {
         routeGroups.push(new LikeAPI(router));
         routeGroups.push(new FollowAPI(router))
         routeGroups.push(new CategoryAPI(router))
+        routeGroups.push(new SubscriptionAPI(router))
     }
 
     setContentType(req: Request, res: Response, next: NextFunction) {

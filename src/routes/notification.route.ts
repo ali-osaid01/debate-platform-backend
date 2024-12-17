@@ -14,7 +14,8 @@ export default class NotificationAPI {
     }
 
     setupRoutes() {
-        this.router.get("/",authMiddleware(Object.values(EUserRole)),this.NotificationController.index)
+        this.router.get("/",authMiddleware(Object.values(EUserRole)),
+        this.NotificationController.index)
     }
 
     getRouter() {

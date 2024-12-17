@@ -10,14 +10,16 @@ export interface IParticipant {
 export interface IEvent {
   title: string;
   description: string;
-  type: number
+  type: string;
   date: Date;
   location: string;
+  category: string;
+  topic: string;
   picture: string;
   postedBy: Types.ObjectId | string | IUser;
   status: EventStatus;
   approvalStatus: ApprovalStatus;
-  participants: IParticipant[]; 
+  participants: IParticipant[];
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;

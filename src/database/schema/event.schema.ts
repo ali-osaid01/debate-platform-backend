@@ -1,6 +1,11 @@
-import { Schema } from 'mongoose';
-import {  EventStatus, ApprovalStatus, ParticipantStatus, EVENT_TYPE } from '../../interface/enum'; 
-import { IEvent } from '../../interface/event.interface';
+import { Schema } from "mongoose";
+import {
+  EventStatus,
+  ApprovalStatus,
+  ParticipantStatus,
+  EVENT_TYPE,
+} from "../../interface/enum";
+import { IEvent } from "../../interface/event.interface";
 
 export const eventSchema: Schema<IEvent> = new Schema(
   {
@@ -10,12 +15,12 @@ export const eventSchema: Schema<IEvent> = new Schema(
     },
     postedBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
-    type:{
-      type:Number,
-      enum:EVENT_TYPE
+    type: {
+      type: String,
+      enum: EVENT_TYPE,
     },
     description: {
       type: String,
@@ -46,14 +51,14 @@ export const eventSchema: Schema<IEvent> = new Schema(
         {
           user: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: "User",
           },
           status: {
             type: String,
             enum: Object.values(ParticipantStatus),
             default: ParticipantStatus.PENDING,
           },
-        }
+        },
       ],
       default: [],
       _id: false,
@@ -63,5 +68,5 @@ export const eventSchema: Schema<IEvent> = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
