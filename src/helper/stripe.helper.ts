@@ -77,6 +77,9 @@ class StripeHelper {
       : stripe.products.list();
   }
 
+  cancelSubscription(subscriptionId: string): Promise<Stripe.Response<Stripe.Subscription>> {
+    return stripe.subscriptions.cancel(subscriptionId);
+  }
  
 }
 

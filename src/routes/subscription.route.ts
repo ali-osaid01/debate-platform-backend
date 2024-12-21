@@ -22,6 +22,11 @@ export default class SubscriptionAPI {
             authMiddleware(Object.values(EUserRole)),
             this.SubscriptionController.create
         );
+
+        this.router.put('/cancel',
+            authMiddleware(Object.values(EUserRole)),
+            this.SubscriptionController.cancel
+        )
     }
 
     getRouter() {
