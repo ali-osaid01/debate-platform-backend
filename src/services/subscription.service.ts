@@ -16,10 +16,13 @@ class SubscriptionService {
         }
     };
 
-    create = async (customer:string,price:string,paymentMethod:string): Promise<ApiResponse> => {
+create = async (customer:string,price:string,plan:string): Promise<ApiResponse> => {
         try {
-            console.log("CUSTOMER ->",customer);
-            const subscription = await stripeHelper.createCheckoutSession(customer, price);
+            const metadata = {
+                plan: plan,
+                price: price
+            }
+            const subscription = await stripeHelper.createCheckoutSession(customer, price,metadata);
             return this.Response.sendSuccessResponse("Events Fetch Successfully", subscription);
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });

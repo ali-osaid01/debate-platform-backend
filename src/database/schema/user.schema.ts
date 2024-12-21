@@ -2,7 +2,7 @@ import { Schema, Document } from "mongoose";
 import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { IUser } from "../../interface/user.interface";
-import { EUserRole } from "../../interface/enum";
+import { EUserRole, Subscription_Type } from "../../interface/enum";
 import e from "express";
 
 declare global {
@@ -38,12 +38,19 @@ export const UserSchema = new Schema<UserDocument>(
     followingCount: { type: Number, default: 0, positive: true },
     followerCount: { type: Number, default: 0, positive: true },
     postCount: { type: Number, default: 0, positive: true },
-    subscription:{
-      subscriptionId: { type: String, default: null },
-      subscriptionStatus: { type: String, enum: ["active", "inactive"], default: "inactive" },
-      subscriptionPlan: { type: String, default: null },
-      subscriptionStart: { type: Date, default: null },
-      subscriptionEnd: { type: Date, default: null },
+    subscription: {
+      plan: { type: String, enum: Object.values(Subscription_Type) },
+      subscribe: { type: Boolean, default: false },
+      price: { type: String, default: null },
+      product: { type: String, default: null },
+      subscriptionAuth: { type: String, default: null },
+      expirytime: { type: Date, default: null },
+    },
+    notification: {
+      isEmailNotificationAllow: { type: Boolean, default: false },
+      isPushNotificationAllow: { type: Boolean, default: false },
+      isMarketingNotificationAllow: { type: Boolean, default: false },
+      isPromotionalNotificationAllow: { type: Boolean, default: false },
     },
     customer: { type: String, default: null },
     profilePicture: { type: String, default: null },

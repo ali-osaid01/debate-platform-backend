@@ -39,13 +39,14 @@ class EventController {
         approvalStatus: status as ApprovalStatus,
       };
 
-      if (postedBy) matchStage.postedBy = new mongoose.Types.ObjectId(req.user.id);
+      console.log("POSTED BY ->",postedBy);
+      if (postedBy) matchStage.postedBy = new mongoose.Types.ObjectId(postedBy as string);
       if (type) matchStage.type = type;
 
       // Add the $match stage to the pipeline
       pipeline.push({ $match: matchStage });
 
-      const response = await this.EventService.index(pipeline, +page, +limit);
+      const response = await this.EventService.index(pipeline, +page, +limit,req.user.id);
       res.status(response.code).json(response);
     },
   );

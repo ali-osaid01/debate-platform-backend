@@ -51,3 +51,9 @@ export enum EVENT_TYPE {
   PRIVATE = "PRIVATE",
   PUBLIC = "PUBLIC",
 }
+
+export enum Subscription_Type {
+  ELITE = "ELITE",
+  PRO = "PRO",
+  BASIC = "BASIC",
+}

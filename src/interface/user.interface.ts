@@ -1,3 +1,12 @@
+export interface ISubscription {
+  plan: string;
+  subscribe: boolean;
+  price: string;
+  product: string;
+  subscriptionAuth: string;
+  expirytime: Date;
+}
+
 export interface IUser {
   id: string;
   _id: string;
@@ -10,13 +19,14 @@ export interface IUser {
   dob: Date;
   followingCount: number;
   followerCount: number;
-  subscription:{
-    subscriptionId: string;
-    subscriptionStatus: string;
-    subscriptionPlan: string;
-    subscriptionStart: Date;
-    subscriptionEnd: Date;
+  subscription: ISubscription;
+  notification:{
+    isEmailNotificationAllow: boolean;
+    isPushNotificationAllow: boolean;
+    isMarketingNotificationAllow: boolean;
+    isPromotionalNotificationAllow: boolean;
   }
+
   customer:string
   postCount: number;
   phone: string;

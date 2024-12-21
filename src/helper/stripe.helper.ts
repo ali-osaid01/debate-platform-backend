@@ -29,7 +29,7 @@ class StripeHelper {
   updateCard(
     customerId: string,
     sourceId: string,
-    payload: Stripe.CustomerSourceUpdateParams
+    payload: Stripe.CustomerUpdateSourceParams
   ): Promise<Stripe.CustomerSource> {
     return stripe.customers.updateSource(customerId, sourceId, payload);
   }
@@ -45,44 +45,30 @@ class StripeHelper {
     });
   }
 
-  createSubscription(
-    params: Stripe.SubscriptionCreateParams
-  ): Promise<Stripe.Subscription> {
-    return stripe.subscriptions.create(params);
-  }
-  createBillingPortalSession(
-    customerId: string
-  ): Promise<Stripe.BillingPortal.Session> {
-    return stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: "http://localhost:3000/subscription",
-    });
-  }
-
-
-  createSubscriptionItem(
-    customerId: string,
-    priceId: string,
-    paymentMethod:string
-  ): Promise<Stripe.Subscription> {
-    return stripe.subscriptions.create({
-      customer: customerId,
-        default_payment_method: 'pm_card_visa_debit',
-        payment_behavior:"error_if_incomplete",
-      // cancel_at_period_end: true,
-      items: [{ price: priceId }],
-    });
-  }
-
-  deleteSubscriptionItem(subscriptionId: string): Promise<Stripe.Subscription> {
-    return stripe.subscriptions.cancel(subscriptionId);
+ 
+  stripeWebHookSubscription(body: string, sig: string): Stripe.Event {
+    return stripe.webhooks.constructEvent(
+      body,
+      sig,
+      "whsec_b37ec563a31f7fb688376f730420c50ef2973ff6d910621178a0e98c8420008b"
+    );
   }
 
   createCheckoutSession(
-    customer:string,
-    price:string
+    customer: string,
+    price: string,
+    metadata: { price: string,plan:string }
   ): Promise<Stripe.Checkout.Session> {
-    return stripe.checkout.sessions.create({mode:"subscription",customer,line_items:[{price,quantity:1}],success_url:"http://localhost:3000/subscription",cancel_url:"http://localhost:3000/subscription"});
+    return stripe.checkout.sessions.create(
+      { mode: "subscription",
+          subscription_data:{
+            metadata
+          },
+        customer, line_items: 
+        [{ price, quantity: 1 }], 
+        success_url: "http://localhost:3000/subscription/success", 
+        cancel_url: "http://localhost:3000/subscription/failed" 
+      });
   }
 
   subscriptions(productId?: string): Promise<Stripe.Product | Stripe.ApiList<Stripe.Product>> {
@@ -91,10 +77,7 @@ class StripeHelper {
       : stripe.products.list();
   }
 
-  // Plan Management
-  getPlan(planId: string): Promise<Stripe.Plan> {
-    return stripe.plans.retrieve(planId);
-  }
+ 
 }
 
 export const stripeHelper = new StripeHelper();

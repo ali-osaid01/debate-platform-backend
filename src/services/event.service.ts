@@ -1,4 +1,4 @@
-import { PipelineStage } from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import { eventRepository, notificationRepository, userRepository } from ".";
 import { ApiResponse } from "../interface";
 import {
@@ -21,40 +21,27 @@ class EventService {
     query: PipelineStage[],
     page: number,
     limit: number,
+    user?:string
   ): Promise<ApiResponse> => {
     try {
-      query.push({
-        $lookup: {
-          from: "users",
-          localField: "postedBy",
-          foreignField: "_id",
-          as: "postedBy",
-          pipeline: [
-            {
-              $project: {
-                _id: 1,
-                name: 1,
-                email: 1,
-                profilePicture: 1,
-              },
-            },
-          ],
-        },
-      });
 
       query.push(
         {
-          $unwind: "$participants",
+          $sample: {
+            size: limit,
+          },
         },
         {
+          
           $lookup: {
             from: "users",
-            localField: "participants.user",
+            localField: "postedBy",
             foreignField: "_id",
-            as: "userInfo", 
+            as: "postedBy",
             pipeline: [
               {
                 $project: {
+                  _id: 1,
                   name: 1,
                   email: 1,
                   profilePicture: 1,
@@ -64,45 +51,107 @@ class EventService {
           },
         },
         {
-          $unwind: {
-            path: "$userInfo", // Unwind userInfo array
-            preserveNullAndEmptyArrays: true, // Keep the original participant if no match is found
+          $addFields: {
+            postedBy: { $arrayElemAt: ["$postedBy", 0] },
           },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "participants.user",
+            foreignField: "_id",
+            as: "participantUsers",
+          },
+        },
+        
+        {
+          $addFields: {
+            participants: {
+              $map: {
+                input: "$participants",
+                as: "participant",
+                in: {
+                  $mergeObjects: [
+                    "$$participant",
+                    {
+                      user: {
+                        $arrayElemAt: [
+                          {
+                            $filter: {
+                              input: "$participantUsers",
+                              as: "u",
+                              cond: { $eq: ["$$u._id", "$$participant.user"] }
+                            }
+                          },
+                          0
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          $project: {
+            participantUsers: 0
+          }
+        },
+        {
+          $lookup: {
+            from: "likes",
+            localField: "_id",
+            foreignField: "event",
+            pipeline: [
+              {
+                $match: {
+                  status: true
+                }
+              },
+              {
+                $group: {
+                  _id: null,
+                  totalLikes: { $sum: 1 },
+                  userLiked: {
+                    $sum: {
+                      $cond: [
+                        { $eq: ["$user", new mongoose.Types.ObjectId(user)] },
+                        1,
+                        0
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  count: "$totalLikes",
+                  isLiked: { $gt: ["$userLiked", 0] }
+                }
+              }
+            ],
+            as: "likes"
+          }
         },
         {
           $addFields: {
-            "participants.userInfo": {
-              // Add user info directly under participants
-              name: "$userInfo.name",
-              email: "$userInfo.email",
-              profilePicture: "$userInfo.profilePicture",
+            likeCount: { 
+              $ifNull: [{ $arrayElemAt: ["$likes.count", 0] }, 0] 
             },
-          },
+            isLiked: { 
+              $ifNull: [{ $arrayElemAt: ["$likes.isLiked", 0] }, false] 
+            }
+          }
         },
         {
-          $group: {
-            _id: "$_id",
-            postedBy: { $first: "$postedBy" },
-            description: { $first: "$description" },
-            picture: { $first: "$picture" },
-            date: { $first: "$date" },
-            status: { $first: "$status" },
-            approvalStatus: { $first: "$approvalStatus" },
-            participants: { $push: "$participants" },
-            type: { $first: "$type" },
-            location: { $first: "$location" },
-            isDeleted: { $first: "$isDeleted" },
-            createdAt: { $first: "$createdAt" },
-            updatedAt: { $first: "$updatedAt" },
-          },
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: ["$$ROOT", { participants: "$participants" }],
-            },
-          },
-        },
+          $project: {
+            likes: 0
+          }
+        }
+      
+        
       );
 
       // Execute the aggregation query
@@ -111,9 +160,10 @@ class EventService {
         limit,
         query,
       });
+
       return this.Response.sendSuccessResponse(
-        "Events Fetch Successfully",
-        events,
+        "Events Fetched Successfully",
+        events
       );
     } catch (error) {
       return this.Response.sendResponse(500, {
@@ -123,7 +173,7 @@ class EventService {
     }
   };
 
-  create = async (data: Partial<IEvent>,username:string): Promise<ApiResponse> => {
+  create = async (data: Partial<IEvent>, username: string): Promise<ApiResponse> => {
     try {
       const event = await eventRepository.create(data);
       await userRepository.updateById(data.postedBy as string, { $inc: { postCount: 1 } });
@@ -219,7 +269,7 @@ class EventService {
         type: notificationType,
       });
 
-     
+
 
       return this.Response.sendSuccessResponse(
         "Event Status Updated Successfully",

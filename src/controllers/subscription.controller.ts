@@ -16,15 +16,11 @@ class SubscriptionController {
     });
 
     public create = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        let {customer,price,paymentMethod} = req.body;
-
-        console.log("REQ USER ->",req.user);
-        if (customer == null) {
-           customer = stripeHelper.createStripeCustomer(req.user.email);
-           await userRepository.updateById(req.user.id, {customer: customer.id});
-        }
-        
-        const response = await this.SubscriptionService.create(customer,price,paymentMethod);
+        let {price,plan} = req.body;
+        const user = await userRepository.getById(req.user.id).select("customer");
+      
+        if(!user) return res.status(400).json({message:"Stripe customer not found"});
+        const response = await this.SubscriptionService.create(user.customer,price,plan);
         res.status(response.code).json(response);
     });
 

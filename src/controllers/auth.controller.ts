@@ -12,7 +12,6 @@ class AuthController {
     public register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const body = req.body;
         const response = await this.AuthService.register(body);
-        console.log("response ->",response)
         res.status(response.code).json(response);
     });
 
@@ -20,7 +19,7 @@ class AuthController {
         const { email, password, fcmToken } = req.body;
         const response = await this.AuthService.login(email, password, fcmToken);
         
-        if(response.code == 200) setAccessTokenCookie(res, (response.data as { accessToken: string }).accessToken);
+        // if(response.code == 200) setAccessTokenCookie(res, (response.data as { accessToken: string }).accessToken);
         res.status(response.code).json(response);
     });
 
