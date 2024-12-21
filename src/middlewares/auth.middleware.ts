@@ -8,6 +8,7 @@ export default function authMiddleware(roles: string[]) {
         
         const accessToken = req.headers.authorization?.split(' ')[1] || req.session?.accessToken || req.cookies?.accessToken
 
+        console.log("ACCESS TOKEN -> ", accessToken)
         if (!accessToken) return next({
             statusCode: STATUS_CODES.UNAUTHORIZED,
             message: 'Authorization failed!'
@@ -27,6 +28,7 @@ export default function authMiddleware(roles: string[]) {
                 message: 'Unauthorized access!'
             });
 
+            console.log("USER DECODED ->",user)
             if (!roles.includes(req.user.role)) return next({
                 statusCode: STATUS_CODES.UNAUTHORIZED,
                 message: 'Unauthorized access!'

@@ -32,6 +32,7 @@ create = async (customer:string,price:string,plan:string): Promise<ApiResponse> 
 
     cancel = async (subscriptionId: string,user:string): Promise<ApiResponse> => {
         try {  
+            if(!subscriptionId) return this.Response.sendResponse(400, { msg: "Subscription Id is required" });
             const subscription = await stripeHelper.cancelSubscription(subscriptionId);
             await userRepository.updateById(user, { subscription: {
                 subscribe: false,

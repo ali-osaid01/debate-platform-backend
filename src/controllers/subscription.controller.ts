@@ -27,7 +27,7 @@ class SubscriptionController {
     public cancel = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         let {subscriptionId} = req.body;
         const user = req.user.id;
-
+        
         const response = await this.SubscriptionService.cancel(subscriptionId,user);
         res.status(response.code).json(response);
     })
