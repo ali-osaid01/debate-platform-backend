@@ -57,3 +57,20 @@ export enum Subscription_Type {
   PRO = "PRO",
   BASIC = "BASIC",
 }
+
+export enum SOCKET_EVENTS {
+  CONNECTION = "connection",
+  DISCONNECT = "disconnect",
+  CHAT_CREATED = "chat-created",
+  CHAT_SOCKET_ERROR = "chat-socket-error",
+  SEND_MESSAGE = "send-message",
+  MESSAGE_SOCKET_ERROR = "message-socket-error",
+  CHAT_LIST = "chat-list",
+  CHAT_MESSAGE_LIST = "chat-message-list",
+  CHAT_LIST_ERROR = "chat-list-error",
+  "USER-ADDED" = "user-added",
+  "USER-LEAVE" = "user-leave",
+  "USER-JOIN-ROOM" = "user-join-room",
+  "USER-LEAVE-ROOM" = "user-leave-room",
+
+}

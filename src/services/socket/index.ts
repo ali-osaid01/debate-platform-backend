@@ -1,51 +1,57 @@
 import { Request } from "express";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
+import { CustomSocket } from "../../interface";
+import { authenticationMiddleware } from "./middleware/socket.auth.middleware";
+import { createChat } from "./events/create-chat.events";
+import { fetchChats } from "./events/fetch-chat-events";
+import { addParticipants } from "./events/add-participants.events";
+import { removeParticipants } from "./events/remove-participants.events";
+import { joinRoom } from "./events/join-room.events";
+import { sendMessage } from "./events/send-message.events";
+import { fetchChatMessage } from "./events/chat-message.events";
 
-interface ISocketEventParams {
-    req: Request;
-    roomId: string;
-    event: string;
-    payload: any;
-}
+// interface ISocketEventParams {
+//   req: Request;
+//   roomId: string;
+//   event: string;
+//   payload: any;
+// }
 
-// unread count event
-const unreadCountEvent = (socket: Socket) => {
-    socket.on("unread-count", async (userId) => {
-        // get the unread count from the database
-        socket.emit("unread-count", { count: 5 });
-    });
-}
+export const initializeSocketIO = (io: Server): void => {
+  io.use(authenticationMiddleware);
 
-// read all notifications event
-const readAllEvent = (socket: Socket) => {
-    socket.on("read-all", async (userId) => {
-        // mark all notifications as read in the database
-    });
-}
+  // Handle socket connections
+  io.on("connection", (socket: CustomSocket) => {
+    try {
+      console.log(`Socket connected -> User ID: ${socket.user?.id}`);
 
-export const initializeSocketIO = (io: Server) => {
-    return io.on("connection", async (socket: Socket) => {
-        try {
-            const user = socket.handshake.headers.user as string;
-            console.log('socket connected >>>>', user);
+      createChat(socket,io);
+      fetchChats(socket);
+      addParticipants(socket,io);
+      removeParticipants(socket,io);
+      sendMessage(socket,io);
+      fetchChatMessage(socket,io);
+      joinRoom(socket,io);
 
-            // join the room with user id
-            socket.join(user);
+      socket.on("disconnect", () => console.log(`Socket disconnected -> User ID: ${socket.user?.id}`));
 
-            // Common events that needs to be mounted on the initialization
-            unreadCountEvent(socket);
-            readAllEvent(socket);
-
-            socket.on("disconnect", async () => {
-                console.log("user has disconnected..", user);
-            });
-
-        } catch (error: any) {
-            socket.emit("socket-error", error?.message || "Something went wrong while connecting to the socket.");
-        }
-    });
+    } catch (error: any) {
+      console.error("Socket connection error:", error.message);
+      socket.emit(
+        "socket-error",
+        error?.message || "An error occurred while connecting to the socket."
+      );
+    }
+  });
 };
 
-export const emitSocketEvent = ({ req, roomId, event, payload }: ISocketEventParams) => {
-    req.app.get("io").in(roomId).emit(event, payload);
-};
+// // Utility function to emit events to a specific room
+// export const emitSocketEvent = ({
+//   req,
+//   roomId,
+//   event,
+//   payload,
+// }: ISocketEventParams): void => {
+//   const io = req.app.get("io") as Server;
+//   io.to(roomId).emit(event, payload);
+// };

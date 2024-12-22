@@ -66,8 +66,8 @@ class StripeHelper {
           },
         customer, line_items: 
         [{ price, quantity: 1 }], 
-        success_url: "http://localhost:3000/subscription/success", 
-        cancel_url: "http://localhost:3000/subscription/failed" 
+        success_url: "https://debate-platform.vercel.app/subscription/success", 
+        cancel_url: "https://debate-platform.vercel.app/subscription/failed" 
       });
   }
 
