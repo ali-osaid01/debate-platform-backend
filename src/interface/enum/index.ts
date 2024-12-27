@@ -72,5 +72,5 @@ export enum SOCKET_EVENTS {
   "USER-LEAVE" = "user-leave",
   "USER-JOIN-ROOM" = "user-join-room",
   "USER-LEAVE-ROOM" = "user-leave-room",
-
+  "FETCH-CHAT-MESSAGE" = "fetch-chat-message",
 }

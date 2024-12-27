@@ -79,11 +79,12 @@ class EventController {
 
   public toggleUserStatus = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { event, status, user } = req.body;
+      const { event, status, user,notification } = req.body;
       const response = await this.EventService.toggleUserStatus(
         user,
         event,
         status,
+        notification
       );
       res.status(response.code).json(response);
     },

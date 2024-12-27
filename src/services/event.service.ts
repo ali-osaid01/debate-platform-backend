@@ -1,17 +1,19 @@
 import mongoose, { PipelineStage } from "mongoose";
-import { eventRepository, notificationRepository, userRepository } from ".";
+import { chatRepository, eventRepository, notificationRepository, userRepository } from ".";
 import { ApiResponse } from "../interface";
 import {
   ApprovalStatus,
   ENOTIFICATION_TYPES,
   ParticipantStatus,
+  SOCKET_EVENTS,
 } from "../interface/enum";
 import { IEvent } from "../interface/event.interface";
 import Response from "../utils/response";
+import server from "..";
+import { IChat } from "../interface/chat.interface";
 
 class EventService {
   private Response: Response;
-
   constructor() {
     this.Response = new Response();
 
@@ -192,6 +194,14 @@ class EventService {
           });
         }
       }
+      await chatRepository.create({
+        name: event?.title as string,
+        event: event?._id as string,
+        creator: event?.postedBy as string,
+        participants: [event.postedBy as string],
+      
+      })
+
       return this.Response.sendResponse(201, {
         msg: "Event created successfully",
         event,
@@ -288,6 +298,7 @@ class EventService {
     user: string,
     id: string,
     status: ParticipantStatus,
+    notification:string
   ): Promise<ApiResponse> => {
     try {
       const event = await eventRepository.updateById(
@@ -306,17 +317,33 @@ class EventService {
         return this.Response.sendResponse(404, { msg: "Event not found" });
       const content = `Participant has ${status === "confirmed" ? "accepted" : "rejected"} your invite for ${event.title}`;
 
-      await notificationRepository.create({
-        receiver: event?.postedBy as string,
-        sender: user as string,
-        title: `Participant has ${status === "confirmed" ? "accepted" : "rejected"} your Invite for ${event.title}`,
-        content: content,
-      });
+      await Promise.all([
+        notificationRepository.create({
+          receiver: event?.postedBy as string,
+          sender: user as string,
+          title: `Participant has ${status === "confirmed" ? "accepted" : "rejected"} your Invite for ${event.title}`,
+          content: content,
+        }),
 
+        notificationRepository.updateById(
+          notification,
+          {
+            isRead: true
+          }
+        ),
+       
+      ]);
+
+      if(status == ParticipantStatus.CONFIRMED){
+        await chatRepository.updateOne({event:id},{
+          $addToSet:{participants:user}
+        })
+      }
       return this.Response.sendSuccessResponse(
         "Event status updated and notification sent",
         event,
       );
+
     } catch (error) {
       console.error("Error toggling user status:", error);
       return this.Response.sendResponse(500, {

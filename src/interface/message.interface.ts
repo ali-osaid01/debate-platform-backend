@@ -6,7 +6,7 @@ export interface IMessage {
     
     chat: string | IChat | ObjectId; 
     sender: string | IUser | ObjectId;
-    type: "text" | "image" | "video" | "audio" | "document";
+    messageType: "text" | "image" | "video" | "audio" | "document";
     content: string; 
     isDeleted: boolean; 
     createdAt: Date; 

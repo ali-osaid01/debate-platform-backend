@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { Server } from "socket.io";
 import { CustomSocket } from "../../interface";
 import { authenticationMiddleware } from "./middleware/socket.auth.middleware";
@@ -23,7 +22,7 @@ export const initializeSocketIO = (io: Server): void => {
   // Handle socket connections
   io.on("connection", (socket: CustomSocket) => {
     try {
-      console.log(`Socket connected -> User ID: ${socket.user?.id}`);
+      console.log(`Socket connected -> User ID: ${socket.user?.id} ${socket.user?.name}`);
 
       createChat(socket,io);
       fetchChats(socket);
@@ -32,7 +31,7 @@ export const initializeSocketIO = (io: Server): void => {
       sendMessage(socket,io);
       fetchChatMessage(socket,io);
       joinRoom(socket,io);
-
+      fetchChatMessage(socket,io);
       socket.on("disconnect", () => console.log(`Socket disconnected -> User ID: ${socket.user?.id}`));
 
     } catch (error: any) {

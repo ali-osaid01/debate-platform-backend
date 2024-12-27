@@ -9,13 +9,12 @@ class notificationController {
 
     public index = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const { page = 1, limit = 10, type } = req.query;
-        let filter: Partial<INotification> = { receiver: req.user.id };
+        let filter: Partial<INotification> = { receiver: req.user.id,isRead:false };
 
         if (type !== undefined && !isNaN(Number(type))) {
             filter = { ...filter, type: Number(type)};
         }
         
-        console.log("FILTER ->", filter)
         const response = await this.NotificationService.index(filter, Number(page), Number(limit));
         res.status(response.code).json(response);
     });
