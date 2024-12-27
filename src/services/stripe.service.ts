@@ -13,7 +13,7 @@ class StripeService {
         try {
           event = stripeHelper.stripeWebHookSubscription(req.body, sig as string);
         } catch (err) {
-        //   console.error("Webhook Error:", (err as Error).message);
+          console.error("Webhook Error:", (err as Error).message);
           return res.status(400).send(`Webhook Error: ${(err as Error).message}`);
         }
     

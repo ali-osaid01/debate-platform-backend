@@ -50,7 +50,7 @@ class StripeHelper {
     return stripe.webhooks.constructEvent(
       body,
       sig,
-      "whsec_b37ec563a31f7fb688376f730420c50ef2973ff6d910621178a0e98c8420008b"
+      "whsec_1vzgeaO6pOqrHDWdvneLs0XIc8POSMWa"
     );
   }
 
