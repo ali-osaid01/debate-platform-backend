@@ -29,7 +29,8 @@ class EventController {
         limit = 10,
         status = ApprovalStatus.PENDING,
         postedBy,
-        type
+        type,
+        category
       } = req.query;
 
       const pipeline: any[] = [];
@@ -42,8 +43,7 @@ class EventController {
       console.log("POSTED BY ->",postedBy);
       if (postedBy) matchStage.postedBy = new mongoose.Types.ObjectId(postedBy as string);
       if (type) matchStage.type = type;
-
-      // Add the $match stage to the pipeline
+      if (category) matchStage.category = new mongoose.Types.ObjectId(category as string);
       pipeline.push({ $match: matchStage });
 
       const response = await this.EventService.index(pipeline, +page, +limit,req.user.id);

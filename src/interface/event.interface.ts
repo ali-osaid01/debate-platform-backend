@@ -13,13 +13,14 @@ export interface IEvent {
   type: string;
   date: Date;
   location: string;
-  category: string;
+  category: Types.ObjectId | string;
   topic: string;
   picture: string;
   postedBy: Types.ObjectId | string | IUser;
   status: EventStatus;
   approvalStatus: ApprovalStatus;
   participants: IParticipant[];
+  
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;

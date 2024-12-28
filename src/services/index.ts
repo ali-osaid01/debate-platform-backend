@@ -14,6 +14,8 @@ import { FollowDocument } from "../interface/follow.interface";
 import { LikeDocument } from "../interface/like.interface";
 import { MessageDocument } from "../interface/message.interface";
 import { NotificationDocument } from "../interface/notification.interface";
+import { CalendarSchema } from "../database/schema/calender.schema";
+import { CalenderDocument } from "../interface/calender.interface";
 
 export const userRepository = new BaseModel<UserDocument>("User", UserSchema);
 export const eventRepository = new BaseModel<EventDocument>("Event",eventSchema);
@@ -23,3 +25,4 @@ export const followRepository = new BaseModel<FollowDocument>("Follow",FollowSch
 export const categoryRepository = new BaseModel<CategoryDocument>("Category",categorySchema); 
 export const chatRepository = new BaseModel<ChatDocument>("Chat",chatSchema);
 export const messageRepository = new BaseModel<MessageDocument>("Message",messageSchema);
+export const calendarRepository = new BaseModel<CalenderDocument>("Calender",CalendarSchema);
