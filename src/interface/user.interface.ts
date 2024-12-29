@@ -1,3 +1,6 @@
+import { Types } from "mongoose";
+import { ICategory } from "./category.interface";
+
 export interface ISubscription {
   plan: string;
   subscribe: boolean;
@@ -13,6 +16,8 @@ export interface IUser {
   name: string;
   username: string;
   email: string;
+  languagePreference: string;
+  interest: string[] | Types.ObjectId[] | ICategory[];
   bio: string;
   website: string;
   socialAuth: string;
@@ -26,7 +31,6 @@ export interface IUser {
     isMarketingNotificationAllow: boolean;
     isPromotionalNotificationAllow: boolean;
   }
-
   customer:string
   postCount: number;
   phone: string;

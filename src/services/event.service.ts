@@ -47,6 +47,7 @@ class EventService {
                   name: 1,
                   email: 1,
                   profilePicture: 1,
+                  username:1
                 },
               },
             ],
@@ -179,6 +180,7 @@ class EventService {
     try {
       const event = await eventRepository.create(data);
       await userRepository.updateById(data.postedBy as string, { $inc: { postCount: 1 } });
+      console.log("event ->", event);
       if (
         Array.isArray(data?.participants) &&
         event?.participants.length > 0

@@ -1,9 +1,8 @@
-import { Schema, Document } from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { IUser } from "../../interface/user.interface";
 import { EUserRole, Subscription_Type } from "../../interface/enum";
-import e from "express";
 
 declare global {
   namespace Express {
@@ -20,7 +19,6 @@ declare global {
 }
 
 export type UserDocument = IUser & Document;
-
 export const UserSchema = new Schema<UserDocument>(
   {
     name: { type: String },
@@ -38,6 +36,8 @@ export const UserSchema = new Schema<UserDocument>(
     followingCount: { type: Number, default: 0, positive: true },
     followerCount: { type: Number, default: 0, positive: true },
     postCount: { type: Number, default: 0, positive: true },
+    languagePreference: { type: String, default: "en" },
+    interest:[{type:Types.ObjectId,ref:'Category'}],
     subscription: {
       plan: { type: String, enum: Object.values(Subscription_Type) },
       subscribe: { type: Boolean, default: false },

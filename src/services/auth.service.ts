@@ -28,6 +28,7 @@ class AuthService {
 
   public async login(email: string, password: string, fcmToken: string) {
     let user: any = await userRepository.getOne({ email }, "+password");
+    
     if (!user) {
       return this.responseHandler.sendResponse(
         401,
