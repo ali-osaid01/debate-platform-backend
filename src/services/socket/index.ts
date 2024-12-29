@@ -28,10 +28,10 @@ export const initializeSocketIO = (io: Server): void => {
       fetchChats(socket);
       addParticipants(socket,io);
       removeParticipants(socket,io);
-      sendMessage(socket,io);
       fetchChatMessage(socket,io);
       joinRoom(socket,io);
-      fetchChatMessage(socket,io);
+      sendMessage(socket,io);
+      
       socket.on("disconnect", () => console.log(`Socket disconnected -> User ID: ${socket.user?.id}`));
 
     } catch (error: any) {

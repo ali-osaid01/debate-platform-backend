@@ -9,3 +9,9 @@ export const messageSchema = new Schema({
   }, {
     timestamps: true,
 });
+
+messageSchema.post("save", function (doc, next) {
+  this.populate("sender", "name profilePicture username").then(() => {
+      next();
+  });
+})
