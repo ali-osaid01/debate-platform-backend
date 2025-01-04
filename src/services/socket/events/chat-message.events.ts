@@ -6,7 +6,7 @@ import { PipelineStage, Types } from "mongoose";
 
 export const fetchChatMessage = async (socket: CustomSocket, io: Server) => {
     socket.on(SOCKET_EVENTS["FETCH-CHAT-MESSAGE"], async (payload: { chat: string, limit: number, page: number }) => {
-        const { chat, limit, page } = payload
+        const { chat, limit = 100, page } = payload
         const pipeline: PipelineStage[] = []
 
         pipeline.push({ $match: { chat: new Types.ObjectId(chat) } });

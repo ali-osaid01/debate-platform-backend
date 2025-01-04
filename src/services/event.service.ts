@@ -333,12 +333,17 @@ class EventService {
             isRead: true
           }
         ),
-       
       ]);
 
       if(status == ParticipantStatus.CONFIRMED){
         await chatRepository.updateOne({event:id},{
           $addToSet:{participants:user}
+        })
+      }
+
+      if(status == ParticipantStatus.DECLINED) {
+        await chatRepository.updateOne({event:id},{
+          $pull:{participants:user}
         })
       }
       return this.Response.sendSuccessResponse(
