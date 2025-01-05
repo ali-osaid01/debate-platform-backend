@@ -10,7 +10,6 @@ export const fetchChats = (socket: CustomSocket): void => {
         return;
       }
 
-      console.log("Fetching chats for user:", socket.user.id);
       
       const limit = data?.limit || 15;
       const page = data?.page || 1;    
@@ -20,7 +19,7 @@ export const fetchChats = (socket: CustomSocket): void => {
         limit,
         page,
         query,
-        populate:[{path:'event',select:'title picture'}]
+        populate:[{path:'event',select:'title picture'},{path:'participants',select:'username profilePicture score'}]
       });
 
       // Emit the chats to the client

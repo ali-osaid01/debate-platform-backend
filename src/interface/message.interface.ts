@@ -7,6 +7,7 @@ export interface IMessage {
     chat: string | IChat | ObjectId; 
     sender: string | IUser | ObjectId;
     messageType: "text" | "image" | "video" | "audio" | "document";
+    isAnnocement: boolean;
     content: string; 
     isDeleted: boolean; 
     createdAt: Date; 
