@@ -29,6 +29,7 @@ export const UserSchema = new Schema<UserDocument>(
     socialAuth: { type: String },
     bio: { type: String, default: null },
     dob: { type: Date },
+    badge:[{type:Types.ObjectId,ref:'Badge'}],
     gender: { type: String },
     phone: { type: String, default: null },
     website: { type: String, default: null },

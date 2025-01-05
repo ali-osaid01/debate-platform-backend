@@ -20,6 +20,7 @@ export interface IUser {
   interest: string[] | Types.ObjectId[] | ICategory[];
   bio: string;
   website: string;
+  badge: string[] | Types.ObjectId[];
   socialAuth: string;
   dob: Date;
   followingCount: number;

@@ -23,6 +23,7 @@ export const fetchChats = (socket: CustomSocket): void => {
       });
 
       // Emit the chats to the client
+      console.log("chats.data",chats.data)
       socket.emit(`${SOCKET_EVENTS.CHAT_LIST}-${socket.user.id}`, {chats:chats.data});
     } catch (error: any) {
       console.error("Error fetching chats:", error);

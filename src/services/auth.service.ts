@@ -15,7 +15,6 @@ class AuthService {
     });
     if (existingUser)
       return this.responseHandler.sendResponse(409, "User already exists");
-
     const customer = await stripeHelper.createStripeCustomer(userData.email);
     
     const user: any = await userRepository.create({...userData, customer:customer.id});
@@ -32,7 +31,7 @@ class AuthService {
     if (!user) {
       return this.responseHandler.sendResponse(
         401,
-        "Invalid email or password",
+        "Invalid email",
       );
     }
 

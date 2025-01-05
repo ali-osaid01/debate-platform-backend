@@ -10,6 +10,8 @@ import LikeAPI from "./like.route";
 import FollowAPI from "./follow.route";
 import CategoryAPI from "./category.route";
 import SubscriptionAPI from "./subscription.route";
+import BadgeAPI from "./badge.route";
+import CalenderAPI from "./calender.route";
 
 export default class API {
     router: Router;
@@ -34,6 +36,9 @@ export default class API {
         routeGroups.push(new FollowAPI(router))
         routeGroups.push(new CategoryAPI(router))
         routeGroups.push(new SubscriptionAPI(router))
+        routeGroups.push(new CalenderAPI(router))
+        routeGroups.push(new BadgeAPI(router))
+
     }
 
     setContentType(req: Request, res: Response, next: NextFunction) {

@@ -75,3 +75,8 @@ export enum SOCKET_EVENTS {
   "FETCH-CHAT-MESSAGE" = "fetch-chat-message",
   NEW_MESSAGE = "new-message",
 }
+
+export enum BADGE_ACTION {
+  ASSIGN = "assign",
+  REMOVE = "remove", 
+}

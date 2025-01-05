@@ -1,16 +1,13 @@
 import mongoose, { PipelineStage } from "mongoose";
-import { chatRepository, eventRepository, notificationRepository, userRepository } from ".";
+import { calendarRepository, chatRepository, eventRepository, notificationRepository, userRepository } from ".";
 import { ApiResponse } from "../interface";
 import {
   ApprovalStatus,
   ENOTIFICATION_TYPES,
   ParticipantStatus,
-  SOCKET_EVENTS,
 } from "../interface/enum";
 import { IEvent } from "../interface/event.interface";
 import Response from "../utils/response";
-import server from "..";
-import { IChat } from "../interface/chat.interface";
 
 class EventService {
   private Response: Response;
@@ -179,8 +176,9 @@ class EventService {
   create = async (data: Partial<IEvent>, username: string): Promise<ApiResponse> => {
     try {
       const event = await eventRepository.create(data);
+
+      console.log("EVENT ->", event);
       await userRepository.updateById(data.postedBy as string, { $inc: { postCount: 1 } });
-      console.log("event ->", event);
       if (
         Array.isArray(data?.participants) &&
         event?.participants.length > 0
@@ -196,13 +194,19 @@ class EventService {
           });
         }
       }
-      await chatRepository.create({
-        name: event?.title as string,
-        event: event?._id as string,
-        creator: event?.postedBy as string,
-        participants: [event.postedBy as string],
-      
-      })
+      Promise.all([
+         chatRepository.create({
+          name: event?.title as string,
+          event: event?._id as string,
+          creator: event?.postedBy as string,
+          participants: [event.postedBy as string],
+        }),
+
+         calendarRepository.create({
+          events: event._id as string,
+          creator: event.postedBy as string,
+        })
+      ])
 
       return this.Response.sendResponse(201, {
         msg: "Event created successfully",
@@ -339,6 +343,11 @@ class EventService {
         await chatRepository.updateOne({event:id},{
           $addToSet:{participants:user}
         })
+       const calender = await calendarRepository.create({
+          events: event._id as string,
+          creator: user as string,
+        })
+        console.log("calender ->",calender)
       }
 
       if(status == ParticipantStatus.DECLINED) {

@@ -26,20 +26,26 @@ class CalendarService {
         );
     };
 
-    index = async (page: number, limit: number, filter: PipelineStage[]) => {
-        const result = await calendarRepository.getAllAggregated({
+    index = async (page: number, limit: number, filter: any) => {
+        const result = await calendarRepository.getAll({
             query: filter,
             page,
             limit,
+            populate:[
+                {
+                    path: "events",
+                },
+                {
+                    path: "creator",
+                    select: "name profilePicture username",
+                },
+            ]
         });
-        if (result.data.length === 0)
-            return this.Response.sendResponse(404, "Events not found");
 
         return this.Response.sendSuccessResponse(
             "Events fetched successfully",
             result
         );
-
     };
 
     delete = async (id: string) => {
