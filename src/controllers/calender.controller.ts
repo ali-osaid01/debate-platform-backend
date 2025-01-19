@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../utils/helpers";
 import CalendarService from "../services/calender.service";
 import { ICalendar } from "../interface/calender.interface";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 
 export class CalendarController {
   private CalendarService: CalendarService;
@@ -15,9 +15,8 @@ export class CalendarController {
       let { page = 1, limit = 10 } = req.query;
       page = Number(page);
       limit = Number(limit);
-      const query: Partial<ICalendar> = {
-        creator: new mongoose.Types.ObjectId(req.user.id)
-      }
+      const query: PipelineStage[] = []
+      query.push({ $match: { creator: new mongoose.Types.ObjectId(req.user.id) } });
       const response = await this.CalendarService.index(page, limit, query);
       res.status(response.code).json(response);
     },

@@ -26,22 +26,64 @@ class CalendarService {
         );
     };
 
-    index = async (page: number, limit: number, filter: any) => {
-        const result = await calendarRepository.getAll({
-            query: filter,
+    index = async (page: number, limit: number, pipeline: PipelineStage[]) => {
+        pipeline.push(
+            {
+                $lookup: {
+                    from: "events",
+                    localField: "events",
+                    foreignField: "_id",
+                    as: "event",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "postedBy",
+                                foreignField: "_id",
+                                as: "postedBy",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            _id: 1,
+                                            name: 1,
+                                            email: 1,
+                                            username: 1,
+                                            profilePicture: 1
+                                        },
+                                      
+                                    },
+                                ]
+                            },
+                        },
+                        {
+                            $unwind:{
+                                path: "$postedBy",
+                                preserveNullAndEmptyArrays: true
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $unwind: {
+                    path: "$event",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $unwind: {
+                    path: "$creator",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+        );
+    
+        const result = await calendarRepository.getAllAggregated({
+            query: pipeline,
             page,
             limit,
-            populate:[
-                {
-                    path: "events",
-                },
-                {
-                    path: "creator",
-                    select: "name profilePicture username",
-                },
-            ]
         });
-
+    
         return this.Response.sendSuccessResponse(
             "Events fetched successfully",
             result
