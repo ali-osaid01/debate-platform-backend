@@ -16,6 +16,15 @@ class NotificationService {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }
     };
+
+    update = async (id:string): Promise<ApiResponse> => {
+        try {
+            await notificationRepository.updateMany({ receiver: id }, { isRead: true });
+            return this.Response.sendSuccessResponse("Notification Updated Successfully");
+        } catch (error) {
+            return this.Response.sendResponse(500, { msg: "Something went wrong", error });
+        }
+    }
 }
 
 export default NotificationService;

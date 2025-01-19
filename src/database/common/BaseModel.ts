@@ -95,6 +95,10 @@ export default class BaseModel<T extends Document> {
         return this.model.findByIdAndUpdate(id, update, { new: true, ...options }).exec();
     }
 
+    updateMany(filter: RootFilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) {
+        return this.model.updateMany(filter, update);
+    }
+
     deleteOne(filter: RootFilterQuery<T>): QueryWithHelpers<T | null, T> {
         return this.model.findOneAndDelete(filter);
     }

@@ -30,7 +30,8 @@ class EventController {
         status = ApprovalStatus.PENDING,
         postedBy,
         type,
-        category
+        category,
+        username
       } = req.query;
 
       const pipeline: any[] = [];
@@ -39,14 +40,14 @@ class EventController {
         isDeleted: false,
         approvalStatus: status as ApprovalStatus,
       };
-
-      console.log("POSTED BY ->",postedBy);
+      
       if (postedBy) matchStage.postedBy = new mongoose.Types.ObjectId(postedBy as string);
-      if (type) matchStage.type = type;
       if (category) matchStage.category = new mongoose.Types.ObjectId(category as string);
+      // if (username) matchStage.postedBy.username = username
+      if (type) matchStage.type = type;
       pipeline.push({ $match: matchStage });
 
-      const response = await this.EventService.index(pipeline, +page, +limit,req.user.id);
+      const response = await this.EventService.index(pipeline, +page, +limit,req.user.id,username as string);
       res.status(response.code).json(response);
     },
   );

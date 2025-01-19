@@ -19,6 +19,11 @@ class notificationController {
         res.status(response.code).json(response);
     });
 
+    public update = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const response = await this.NotificationService.update(req.user.id);
+        res.status(response.code).json(response);
+    })
 }
+
 
 export default notificationController

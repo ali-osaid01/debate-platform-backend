@@ -8,6 +8,7 @@ export interface IMessage {
     sender: string | IUser | ObjectId;
     messageType: "text" | "image" | "video" | "audio" | "document";
     isAnnocement: boolean;
+    media:string;
     content: string; 
     isDeleted: boolean; 
     createdAt: Date; 

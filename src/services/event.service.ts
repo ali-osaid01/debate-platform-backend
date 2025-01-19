@@ -13,16 +13,40 @@ class EventService {
   private Response: Response;
   constructor() {
     this.Response = new Response();
-
   }
 
   index = async (
     query: PipelineStage[],
     page: number,
     limit: number,
-    user?:string
+    user?:string,
+    username?:string
   ): Promise<ApiResponse> => {
     try {
+
+      if (username) {
+        console.log("USERNAME IF BLOCK RUNNING ->", username);
+        query.unshift(
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "postedBy",
+                    foreignField: "_id",
+                    as: "posterInfo"
+                }
+            },
+            {
+                $match: {
+                    "posterInfo.username": username
+                }
+            },
+            {
+                $project: {
+                    posterInfo: 0  
+                }
+            }
+        );
+    }
 
       query.push(
         {
@@ -31,7 +55,6 @@ class EventService {
           },
         },
         {
-          
           $lookup: {
             from: "users",
             localField: "postedBy",
@@ -63,7 +86,6 @@ class EventService {
             as: "participantUsers",
           },
         },
-        
         {
           $addFields: {
             participants: {
@@ -150,11 +172,8 @@ class EventService {
             likes: 0
           }
         }
-      
-        
       );
 
-      // Execute the aggregation query
       const events = await eventRepository.getAllAggregated({
         page,
         limit,
