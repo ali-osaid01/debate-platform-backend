@@ -63,6 +63,7 @@ class App {
       cors({
         origin: [
           "https://debate-platform.vercel.app",
+          "https://www.thevirtualdebate.com",
           "http://localhost:3000",
         ],
         credentials: true,
