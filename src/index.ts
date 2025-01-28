@@ -31,6 +31,7 @@ class App {
         origin: [
           "https://debate-platform.vercel.app",
           "http://localhost:3000",
+          "http://localhost:3004",
           "https://www.thevirtualdebate.com",
         ],
         credentials: true,
