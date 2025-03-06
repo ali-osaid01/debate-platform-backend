@@ -5,7 +5,8 @@ import { messageRepository } from "../..";
 
 export const sendMessage = async (socket: CustomSocket, io: Server) => {
     socket.on(SOCKET_EVENTS.SEND_MESSAGE, async (payload: { chat: string, message: string, type?: "text" | "image" | "video" | "audio" | "document",media:string }) => {
-        
+
+        console.log("MESSAGE RECEIVED ->", payload);
         const message = await messageRepository.create({ 
             chat: payload.chat, 
             content: payload.message, 
