@@ -35,6 +35,14 @@ class UserService {
         }
     }
     
+    public async deleteUser (id:string):Promise<ApiResponse> {
+        try {
+            const users = await userRepository.updateById(id,{isDeleted:true,isActive:false})
+            return this.Response.sendSuccessResponse("Users Delete Successfully",{users});
+        } catch (error) {
+            return this.Response.sendResponse(500, { msg: "Something went wrong", error });
+        }
+    }
 }
 
 export default UserService

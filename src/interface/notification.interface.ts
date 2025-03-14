@@ -8,7 +8,7 @@ export interface INotification {
     content: string;
     title: string;
     isRead: boolean;
-    metadata?:string
+    metadata?:{[key:string]:any};
     data?: any;
   }
   

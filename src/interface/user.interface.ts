@@ -14,6 +14,8 @@ export interface IUser {
   id: string;
   _id: string;
   name: string;
+  isDeleted:boolean;
+  isActive:boolean;
   username: string;
   email: string;
   languagePreference: string;

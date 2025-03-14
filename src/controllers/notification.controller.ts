@@ -9,7 +9,7 @@ class notificationController {
 
     public index = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const { page = 1, limit = 10, type } = req.query;
-        let filter: Partial<INotification> = { receiver: req.user.id,isRead:false };
+        let filter: Partial<INotification> = { receiver: req.user.id};
 
         if (type !== undefined && !isNaN(Number(type))) {
             filter = { ...filter, type: Number(type)};

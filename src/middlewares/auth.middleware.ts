@@ -28,7 +28,11 @@ export default function authMiddleware(roles: string[]) {
                 message: 'Unauthorized access!'
             });
 
-            // console.log("USER DECODED ->",user)
+            if(user.isActive === false) return next({
+                statusCode: STATUS_CODES.UNAUTHORIZED,      
+                message: 'Account is Blocked'
+            });
+
             if (!roles.includes(req.user.role)) return next({
                 statusCode: STATUS_CODES.UNAUTHORIZED,
                 message: 'Unauthorized access!'

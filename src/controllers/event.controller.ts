@@ -16,7 +16,6 @@ class EventController {
     async (req: Request, res: Response, next: NextFunction) => {
       const body = req.body;
       const payload: IEvent = { ...body, postedBy: req.user.id };
-      console.log("PAYLOAD GET ->", payload);
       const response = await this.EventService.create(payload,req.user.username);
       res.status(response.code).json(response);
     },

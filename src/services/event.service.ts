@@ -196,7 +196,6 @@ class EventService {
     try {
       const event = await eventRepository.create(data);
 
-      console.log("EVENT ->", event);
       await userRepository.updateById(data.postedBy as string, { $inc: { postCount: 1 } });
       if (
         Array.isArray(data?.participants) &&
@@ -209,7 +208,7 @@ class EventService {
             title: "Event Invitation",
             content: `${username} has invite you to join the event for debate on ${event?.title}`,
             type: ENOTIFICATION_TYPES.EVENT_INVITATION,
-            metadata: event?._id as string,
+            metadata: {event:event?._id as string},
           });
         }
       }
@@ -353,7 +352,7 @@ class EventService {
         notificationRepository.updateById(
           notification,
           {
-            isRead: true
+            metadata:status,
           }
         ),
       ]);

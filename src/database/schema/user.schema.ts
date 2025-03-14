@@ -27,6 +27,7 @@ export const UserSchema = new Schema<UserDocument>(
     password: { type: String, require: true, select: false },
     role: { type: String, enum: Object.values(EUserRole), default: "user" },
     socialAuth: { type: String },
+    isActive: { type: Boolean, default: true },
     bio: { type: String, default: null },
     dob: { type: Date },
     badge:[{type:Types.ObjectId,ref:'Badge'}],
@@ -57,6 +58,7 @@ export const UserSchema = new Schema<UserDocument>(
     profilePicture: { type: String, default: null },
     fcmToken: { type: String, select: false },
     location: { type: String, default: null },
+    isDeleted:{type:Boolean,default:false},
     otp: { type: Number },
     settings: {
       notification: { type: Boolean, default: true },

@@ -24,6 +24,11 @@ export default class UserAPI {
         this.router.get('/authenticated', 
             authMiddleware(Object.values(EUserRole)),
             this.UserController.authenticatedUser);
+
+        this.router.delete('/:id',
+            authMiddleware(Object.values(EUserRole)),
+            this.UserController.deleteUser);
+        
     }
 
     getRouter() {

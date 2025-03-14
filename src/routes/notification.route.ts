@@ -22,6 +22,8 @@ export default class NotificationAPI {
             "/read",authMiddleware(Object.values(EUserRole)),
         this.NotificationController.update
         )
+
+        
     }
 
     getRouter() {
