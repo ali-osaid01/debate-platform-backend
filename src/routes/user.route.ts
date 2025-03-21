@@ -29,6 +29,10 @@ export default class UserAPI {
             authMiddleware(Object.values(EUserRole)),
             this.UserController.deleteUser);
         
+            this.router.post('/toggle-status/:id',
+            authMiddleware(Object.values(EUserRole)),
+            this.UserController.toggleUser);
+
     }
 
     getRouter() {

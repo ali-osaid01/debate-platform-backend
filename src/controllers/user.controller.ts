@@ -19,6 +19,7 @@ class UserController {
       const filter: Partial<IUser> = {
         _id: { $ne: new mongoose.Types.ObjectId(user) },
         role: EUserRole.USER,
+        isDeleted:false
       } as any;
       if (search)
         filter.username = { $regex: search as string, $options: "i" } as any;

@@ -22,8 +22,30 @@ export type UserDocument = IUser & Document;
 export const UserSchema = new Schema<UserDocument>(
   {
     name: { type: String },
-    email: { type: String, lowercase: true },
-    username: { type: String, lowercase: true, unique: true },
+    email: {
+      type: String,
+      index: {
+        unique: true,
+        partialFilterExpression: {
+          email: { $type: "string" },
+          isDeleted: false,
+        },
+      },
+      required: false,
+      lowercase: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      trim: true,
+      index: {
+        unique: true,
+        partialFilterExpression: {
+          username: { $type: "string" },
+          isDeleted: false,
+        },
+      },
+    },
     password: { type: String, require: true, select: false },
     role: { type: String, enum: Object.values(EUserRole), default: "user" },
     socialAuth: { type: String },
@@ -67,7 +89,15 @@ export const UserSchema = new Schema<UserDocument>(
   { timestamps: true, versionKey: false },
 );
 
-UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index(
+  { email: 1, username: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isDeleted: false,
+    },
+  }
+);
 
 UserSchema.pre<UserDocument>("save", async function (next: any) {
   if (!this.isModified("password")) return next();

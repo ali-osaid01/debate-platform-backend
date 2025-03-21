@@ -12,7 +12,6 @@ class ModeratorController {
 
     public create = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const payload = {...req.body,role:EUserRole.MODERATOR};
-        
         const response = await this.ModeratorService.create(payload);
         res.status(response.code).json(response);
     });
@@ -21,7 +20,8 @@ class ModeratorController {
         const { page = 1, limit = 10 ,search = ""} = req.query;
         const query: Partial<IUser & { email?: any }> = {
             role:EUserRole.MODERATOR,
-            email: { $regex: search, $options: "i" }
+            email: { $regex: search, $options: "i" },
+            isDeleted:false
         }
         const response = await this.ModeratorService.index(query, +page, +limit);
         res.status(response.code).json(response);
