@@ -43,6 +43,16 @@ class UserService {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }
     }
+
+    public async toggleUserStatus (id:string,status:boolean):Promise<ApiResponse> {
+        try {
+            const users = await userRepository.updateById(id,{isActive:status})
+            return this.Response.sendSuccessResponse("Users Disable Successfully",{users});
+        } catch (error) {
+            return this.Response.sendResponse(500, { msg: "Something went wrong", error });
+        }
+    }
+    
 }
 
 export default UserService

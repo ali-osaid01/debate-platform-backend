@@ -30,7 +30,8 @@ class EventController {
         postedBy,
         type,
         category,
-        username
+        username,
+        
       } = req.query;
 
       const pipeline: any[] = [];

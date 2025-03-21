@@ -14,7 +14,7 @@ class UserController {
   public index = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const { page = 1, limit = 10, search } = req.query;
-      console.log("query ->",req.query);
+      console.log("query ->", req.query);
       const user = req.user.id;
       const filter: Partial<IUser> = {
         _id: { $ne: new mongoose.Types.ObjectId(user) },
@@ -52,12 +52,21 @@ class UserController {
     },
   );
 
-  public deleteUser =   asyncHandler(
+  public deleteUser = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const { id } = req.params;
       const response = await this.UserService.deleteUser(id);
       res.status(response.code).json(response);
     },
+  );
+
+  public toggleUser = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { id } = req.params;
+      const { status } = req.body
+      const response = await this.UserService.toggleUserStatus(id, status);
+      res.status(response.code).json(response);
+    }
   );
 }
 
