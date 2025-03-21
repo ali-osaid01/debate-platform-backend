@@ -12,6 +12,7 @@ import CategoryAPI from "./category.route";
 import SubscriptionAPI from "./subscription.route";
 import BadgeAPI from "./badge.route";
 import CalenderAPI from "./calender.route";
+import ModeratorAPI from "./moderator.route";
 
 export default class API {
     router: Router;
@@ -38,6 +39,7 @@ export default class API {
         routeGroups.push(new SubscriptionAPI(router))
         routeGroups.push(new CalenderAPI(router))
         routeGroups.push(new BadgeAPI(router))
+        routeGroups.push(new ModeratorAPI(router))
 
     }
 

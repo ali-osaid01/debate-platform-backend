@@ -1,5 +1,6 @@
 import { userRepository } from "."
 import { ApiResponse } from "../interface";
+import { EUserRole } from "../interface/enum";
 import { IUser } from "../interface/user.interface";
 import Response from "../utils/response";
 
@@ -23,7 +24,7 @@ class ModeratorService {
     index = async (filter: Partial<IUser>, page: number, limit: number): Promise<ApiResponse> => {
         try {
             const user = await userRepository.getAll({ query: filter, page, limit}); 
-            return this.Response.sendSuccessResponse("Users Fetch Successfully", user );
+            return this.Response.sendSuccessResponse("Moderator Fetch Successfully", user );
         } catch (error) {
             return this.Response.sendResponse(500, { msg: "Something went wrong", error });
         }
